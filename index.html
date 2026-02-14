@@ -1,1 +1,292 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Asma's Vehicle Pro v6.7</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root { --primary: #1e3799; --bg: #f1f2f6; --danger: #eb4d4b; --warning: #f1c40f; --success: #2ecc71; --dark: #2f3542; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
+        
+        .header { background: linear-gradient(135deg, #1e3799, #0c2461); color: white; padding: 25px 15px 60px; text-align: center; }
+        .summary-row { display: flex; gap: 8px; margin: -30px 10px 15px; }
+        .sum-box { flex: 1; background: #fff; padding: 12px; border-radius: 12px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-top: 4px solid var(--primary); }
+        .sum-box b { font-size: 15px; color: var(--dark); display: block; }
+        .sum-box span { font-size: 10px; color: #666; font-weight: bold; }
 
+        .tools-row { display: flex; gap: 8px; margin: 0 10px 15px; }
+        .tool-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; background: #fff; font-size: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        .container { padding: 0 10px; }
+        .form-card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1.5px solid #eee; border-radius: 10px; box-sizing: border-box; }
+        
+        .grid-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        label { font-size: 10px; font-weight: bold; color: #666; margin-bottom: 3px; display: block; }
+
+        .v-list-item { background: white; padding: 12px; border-radius: 15px; margin-bottom: 15px; border-left: 6px solid #ddd; display: flex; gap: 10px; position: relative; box-shadow: 0 3px 6px rgba(0,0,0,0.05); }
+        .v-thumb { width: 65px; height: 65px; border-radius: 10px; object-fit: cover; background: #eee; flex-shrink: 0; }
+        
+        .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 10px; }
+        .dash-box { font-size: 8px; padding: 5px 2px; border-radius: 6px; text-align: center; font-weight: bold; background: #f8f9fa; border: 1px solid #eee; }
+        .st-expired { background: #ff7675 !important; color: white !important; }
+        .st-due { background: #ffeaa7 !important; color: #856404 !important; }
+
+        .act-btn { flex: 1; border: none; padding: 10px 5px; border-radius: 8px; font-weight: bold; font-size: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        
+        /* Card Overlay */
+        #shareOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; overflow-y: auto; padding-bottom: 30px; }
+        .premium-card { background: white; width: 92%; max-width: 350px; border-radius: 20px; overflow: hidden; margin: 20px auto; text-align: center; }
+        
+        /* Full Ad Styling */
+        .ad-box { padding: 20px 15px; text-align: center; transition: 0.3s; }
+        .ad-box.dark { background: #0c122b; color: #ffffff; }
+        .ad-box.bright { background: #f0f7ff; color: #1a365d; border-top: 2px solid #e2e8f0; }
+        .ad-title { font-size: 16px; font-weight: 900; margin-bottom: 8px; color: var(--primary); }
+        .dark .ad-title { color: #5dade2; }
+        .ad-text { font-size: 11px; line-height: 1.5; margin-bottom: 12px; font-weight: 500; }
+        .ad-phone { font-size: 18px; font-weight: 900; letter-spacing: 1px; }
+
+        .mode-toggle-bar { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
+        .mode-btn { padding: 8px 15px; border-radius: 20px; border: 2px solid #fff; font-size: 11px; font-weight: bold; cursor: pointer; }
+
+        .dl-btn { background: #333; color: white; width: 92%; max-width: 350px; margin: 10px auto; display: block; padding: 15px; border-radius: 15px; font-weight: bold; border: none; }
+    </style>
+</head>
+<body>
+
+<div class="header"><h2>Asma's Vehicle Pro v6.7</h2></div>
+
+<div class="summary-row">
+    <div class="sum-box"><span>TOTAL PAID</span><b id="sumPaid">₹0</b></div>
+    <div class="sum-box"><span>BALANCE</span><b id="sumBal" style="color:var(--danger)">₹0</b></div>
+</div>
+
+<div class="tools-row">
+    <button class="tool-btn" onclick="exportData()"><i class="fas fa-file-download"></i> BACKUP</button>
+    <button class="tool-btn" onclick="document.getElementById('impFile').click()"><i class="fas fa-file-upload"></i> RESTORE</button>
+    <input type="file" id="impFile" hidden onchange="importData(this)">
+</div>
+
+<div class="container">
+    <div class="form-card">
+        <input type="hidden" id="editId">
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+            <button class="act-btn" style="background:#f1f2f6;" onclick="document.getElementById('bgInp').click()">BANNER</button>
+            <button class="act-btn" style="background:#f1f2f6;" onclick="document.getElementById('vImgInp').click()">PHOTO</button>
+            <input type="file" id="bgInp" hidden onchange="processImg(this, 'banner')">
+            <input type="file" id="vImgInp" hidden onchange="processImg(this, 'vehicle')">
+        </div>
+        <input type="text" id="vNo" placeholder="Vehicle Number">
+        <input type="text" id="oName" placeholder="Owner Name">
+        <div style="display:flex; gap:5px;">
+            <input type="tel" id="oPhone" placeholder="Mobile">
+            <input type="number" id="fee" placeholder="Fee">
+            <input type="number" id="paid" placeholder="Paid">
+        </div>
+        <div class="grid-dates">
+            <div><label>Insurance</label><input type="date" id="ins"></div>
+            <div><label>Tax</label><input type="date" id="tax"></div>
+            <div><label>Pollution</label><input type="date" id="pol"></div>
+            <div><label>Fitness</label><input type="date" id="fit"></div>
+            <div><label>Renewal</label><input type="date" id="ren"></div>
+            <div><label>Welfare</label><input type="date" id="wel"></div>
+        </div>
+        <button class="act-btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; padding:15px;" onclick="saveData()">SAVE & UPDATE</button>
+    </div>
+    
+    <input type="text" id="searchInput" placeholder="🔍 Search vehicle..." onkeyup="loadData()" style="margin-bottom:15px; border:2px solid #ddd;">
+    <div id="displayArea"></div>
+</div>
+
+<div id="shareOverlay">
+    <div style="text-align:center; padding: 20px 0 0;">
+        <button class="mode-btn" style="background:#fff; color:#000;" onclick="setCardMode('bright')">BRIGHT MODE</button>
+        <button class="mode-btn" style="background:#333; color:#fff;" onclick="setCardMode('dark')">DARK MODE</button>
+    </div>
+    
+    <div id="card-to-capture" class="premium-card">
+        <div style="background:var(--primary); color:white; padding:15px;">
+            <div id="p_vNo" style="font-size:24px; font-weight:bold;"></div>
+            <div id="p_oName" style="font-size:14px; opacity:0.9;"></div>
+        </div>
+        <div style="height:140px; position:relative; background:#222;">
+            <img id="p_banner" style="width:100%; height:100%; object-fit:cover;">
+            <img id="p_vimg" style="width:85px; height:85px; border:3px solid white; border-radius:50%; position:absolute; bottom:-40px; left:50%; transform:translateX(-50%); object-fit:cover; background:#fff;">
+        </div>
+        <div style="padding:50px 15px 5px;">
+            <div id="p_alerts" style="margin-bottom:15px;"></div>
+            
+            <div id="adBox" class="ad-box bright">
+                <div class="ad-title">ASMA'S VEHICLE SERVICES</div>
+                <div class="ad-text">
+                    വാഹന സംബന്ധമായ എല്ലാ പേപ്പർ വർക്കുകളും ഉത്തരവാദിത്തത്തോടുകൂടി ഞങ്ങൾ ചെയ്തു കൊടുക്കുന്നു. നിങ്ങളുടെ സഹായ സഹകരണങ്ങൾ ഞങ്ങൾ പ്രതീക്ഷിച്ചുകൊള്ളുന്നു.
+                </div>
+                <div class="ad-phone">9037531655, 7012496868</div>
+            </div>
+        </div>
+    </div>
+    <button class="dl-btn" style="background:var(--success)" onclick="downloadCard()">DOWNLOAD CARD</button>
+    <button class="dl-btn" onclick="document.getElementById('shareOverlay').style.display='none'">CLOSE</button>
+</div>
+
+<script>
+    let currentVImg = "";
+    function processImg(i, t) {
+        const r = new FileReader(); r.onload = (e) => { 
+            if(t==='banner') localStorage.setItem('asma_banner', e.target.result); 
+            else currentVImg = e.target.result;
+            alert("ഫോട്ടോ സെറ്റ് ആയി!");
+        }; r.readAsDataURL(i.files[0]);
+    }
+
+    function setCardMode(mode) {
+        const ad = document.getElementById('adBox');
+        ad.className = 'ad-box ' + mode;
+    }
+
+    function exportData() {
+        const data = localStorage.getItem('vData');
+        if(!data) return alert("ഡാറ്റ ലഭ്യമല്ല!");
+        const blob = new Blob([data], {type: 'application/json'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = 'Asma_Backup_' + new Date().toLocaleDateString() + '.json'; a.click();
+    }
+
+    function importData(input) {
+        const r = new FileReader(); r.onload = () => {
+            try { JSON.parse(r.result); localStorage.setItem('vData', r.result); location.reload(); }
+            catch(e) { alert("തെറ്റായ ഫയൽ!"); }
+        }; r.readAsText(input.files[0]);
+    }
+
+    function getMinDiff(dates) {
+        let diffs = [];
+        for(let k in dates) { if(dates[k]) diffs.push(Math.ceil((new Date(dates[k]) - new Date().setHours(0,0,0,0)) / 86400000)); }
+        return diffs.length ? Math.min(...diffs) : 9999;
+    }
+
+    function saveData() {
+        const id = document.getElementById('editId').value;
+        const v = {
+            id: id ? parseInt(id) : Date.now(),
+            vNo: document.getElementById('vNo').value.toUpperCase(),
+            name: document.getElementById('oName').value,
+            phone: document.getElementById('oPhone').value,
+            fee: parseFloat(document.getElementById('fee').value || 0),
+            paid: parseFloat(document.getElementById('paid').value || 0),
+            vImg: currentVImg,
+            dates: { "Insurance": document.getElementById('ins').value, "Tax": document.getElementById('tax').value, "Pollution": document.getElementById('pol').value, "Fitness": document.getElementById('fit').value, "Renewal": document.getElementById('ren').value, "Welfare": document.getElementById('wel').value }
+        };
+        let l = JSON.parse(localStorage.getItem('vData') || '[]');
+        if(id) { 
+            const i = l.findIndex(x => x.id === v.id); 
+            if(!currentVImg) v.vImg = l[i].vImg; l[i] = v; 
+        } else l.unshift(v);
+        localStorage.setItem('vData', JSON.stringify(l));
+        location.reload(); 
+    }
+
+    function loadData() {
+        let l = JSON.parse(localStorage.getItem('vData') || '[]');
+        const searchTxt = document.getElementById('searchInput').value.toLowerCase();
+        let tP = 0, tB = 0;
+        l.forEach(v => { tP += (parseFloat(v.paid) || 0); tB += ((parseFloat(v.fee) || 0) - (parseFloat(v.paid) || 0)); });
+        document.getElementById('sumPaid').innerText = "₹" + tP;
+        document.getElementById('sumBal').innerText = "₹" + tB;
+
+        l.sort((a, b) => getMinDiff(a.dates) - getMinDiff(b.dates));
+        const area = document.getElementById('displayArea'); area.innerHTML = '';
+
+        l.forEach(v => {
+            if(v.vNo.toLowerCase().includes(searchTxt) || v.name.toLowerCase().includes(searchTxt)) {
+                const bal = (parseFloat(v.fee) || 0) - (parseFloat(v.paid) || 0);
+                let dGrid = "";
+                for(let k in v.dates) {
+                    if(v.dates[k]) {
+                        const diff = Math.ceil((new Date(v.dates[k]) - new Date().setHours(0,0,0,0)) / 86400000);
+                        const cls = diff < 0 ? 'st-expired' : (diff <= 15 ? 'st-due' : '');
+                        dGrid += `<div class="dash-box ${cls}">${k}<br>${v.dates[k].split('-').reverse().join('/')}</div>`;
+                    }
+                }
+                area.innerHTML += `<div class="v-list-item">
+                    <img src="${v.vImg || 'https://via.placeholder.com/65'}" class="v-thumb">
+                    <div style="flex:1">
+                        <div style="display:flex; justify-content:space-between"><b>${v.vNo}</b> ${bal > 0 ? `<span style="color:red; font-size:10px; font-weight:bold;">₹${bal}</span>` : `<span style="color:green; font-size:10px; font-weight:bold;">PAID ✅</span>`}</div>
+                        <div style="font-size:11px;color:grey;margin-bottom:5px;">${v.name}</div>
+                        <div class="dash-grid">${dGrid}</div>
+                        <div style="display:flex; gap:5px; margin-top:10px;">
+                            <a href="tel:${v.phone}" class="act-btn" style="background:#3498db;color:white">CALL</a>
+                            <button class="act-btn" style="background:#2ecc71;color:white" onclick="sendWA(${v.id})">WhatsApp</button>
+                            <button class="act-btn" style="background:var(--primary);color:white" onclick="showCard(${v.id})">CARD</button>
+                            <i class="fas fa-edit" style="color:#aaa;padding:8px" onclick="editItem(${v.id})"></i>
+                            <i class="fas fa-trash" style="color:#ddd;padding:8px" onclick="deleteItem(${v.id})"></i>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        });
+    }
+
+    function sendWA(id) {
+        const v = JSON.parse(localStorage.getItem('vData')).find(x => x.id === id);
+        const b = (parseFloat(v.fee) || 0) - (parseFloat(v.paid) || 0);
+        let m = `*ASMA'S VEHICLE SERVICES*\n--------------------------\nപ്രിയപ്പെട്ട ${v.name},\nനിങ്ങളുടെ ${v.vNo} വാഹനത്തിന്റെ പേപ്പറുകൾ പുതുക്കേണ്ട സമയം കഴിഞ്ഞിരിക്കുന്നു:\n`;
+        for(let k in v.dates) { 
+            const d = Math.ceil((new Date(v.dates[k]) - new Date().setHours(0,0,0,0)) / 86400000);
+            if(d <= 30) m += `\n⚠️ *${k}*: ${v.dates[k].split('-').reverse().join('/')}`;
+        }
+        if(b > 0) m += `\n\n💰 *ബാക്കി തുക: ₹${b}*`;
+        m += `\n\n--------------------------\nവാഹന സംബന്ധമായ എല്ലാ പേപ്പർ വർക്കുകളും ഉത്തരവാദിത്തത്തോടുകൂടി ഞങ്ങൾ ചെയ്തു കൊടുക്കുന്നു. നിങ്ങളുടെ സഹായ സഹകരണങ്ങൾ ഞങ്ങൾ പ്രതീക്ഷിച്ചുകൊള്ളുന്നു.\n📞 9037531655, 7012496868`;
+        window.open(`https://wa.me/${v.phone}?text=${encodeURIComponent(m)}`);
+    }
+
+    function showCard(id) {
+        const v = JSON.parse(localStorage.getItem('vData')).find(x => x.id === id);
+        document.getElementById('p_vNo').innerText = v.vNo;
+        document.getElementById('p_oName').innerText = v.name;
+        document.getElementById('p_banner').src = localStorage.getItem('asma_banner') || "";
+        document.getElementById('p_vimg').src = v.vImg || "https://via.placeholder.com/90";
+        document.getElementById('p_alerts').innerHTML = "";
+        for(let k in v.dates) {
+            if(v.dates[k]) {
+                const d = Math.ceil((new Date(v.dates[k]) - new Date().setHours(0,0,0,0)) / 86400000);
+                if(d <= 30) document.getElementById('p_alerts').innerHTML += `<div style="font-size:12px; font-weight:bold; color:red; margin-bottom:4px;">⚠️ ${k} ${d < 0 ? 'കാലാവധി തീർന്നു' : d + ' ദിവസത്തിനുള്ളിൽ തീരും'}</div>`;
+            }
+        }
+        document.getElementById('shareOverlay').style.display = 'block';
+    }
+
+    function downloadCard() {
+        html2canvas(document.querySelector("#card-to-capture"), { useCORS: true, scale: 2 }).then(c => {
+            const l = document.createElement('a'); l.download = vNo.value + '_Asma_Card.png'; l.href = c.toDataURL(); l.click();
+        });
+    }
+
+    function deleteItem(id) {
+        if(confirm("ഈ ഡാറ്റ നീക്കം ചെയ്യട്ടെ?")) {
+            let l = JSON.parse(localStorage.getItem('vData') || '[]');
+            l = l.filter(x => x.id !== id);
+            localStorage.setItem('vData', JSON.stringify(l)); loadData();
+        }
+    }
+
+    function editItem(id) {
+        const v = JSON.parse(localStorage.getItem('vData')).find(x => x.id === id);
+        document.getElementById('editId').value = v.id;
+        document.getElementById('vNo').value = v.vNo; document.getElementById('oName').value = v.name;
+        document.getElementById('oPhone').value = v.phone; document.getElementById('fee').value = v.fee;
+        document.getElementById('paid').value = v.paid;
+        for(let k in v.dates) {
+            const map = {"Insurance":"ins","Tax":"tax","Pollution":"pol","Fitness":"fit","Renewal":"ren","Welfare":"wel"};
+            document.getElementById(map[k]).value = v.dates[k];
+        }
+        currentVImg = v.vImg; window.scrollTo(0,0);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadData);
+</script>
+</body>
+</html>
