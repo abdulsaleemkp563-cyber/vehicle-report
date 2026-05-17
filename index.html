@@ -3,94 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asma's Online Service - Professional RTO Portal</title>
+    <title>Asma's Online Service - Premium RTO Portal</title>
     <style>
         :root {
-            --bg-color: #0d0f14;
-            --card-bg: #161920;
-            --input-bg: #1f232d;
-            --accent: #00d4ff;
-            --accent-hover: #00b9de;
+            --bg-color: #0a0c16;
+            --card-bg: #111424;
+            --input-bg: #1a1f36;
+            --accent: #00f0ff;
+            --accent-glow: rgba(0, 240, 255, 0.3);
             --text-main: #ffffff;
-            --text-muted: #a0aec0;
-            --border-color: #2d323f;
-            --danger: #ff4d4d;
+            --text-muted: #8fa0dd;
+            --border-color: #252d53;
+            --danger: #ff3838;
             --warning: #ffb703;
-            --success: #2ec4b6;
+            --success: #00f5d4;
+            --purple: #9d4edd;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-color); color: var(--text-main); padding-bottom: 50px; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-color); color: var(--text-main); padding-bottom: 50px; background-image: radial-gradient(circle at 50% 10%, #161b33 0%, var(--bg-color) 70%); }
         
         /* Login Screen */
-        .login-screen { height: 100vh; display: flex; align-items: center; justify-content: center; background: #07080c; }
-        .login-card { background: var(--card-bg); padding: 40px; border-radius: 16px; border: 1px solid var(--border-color); text-align: center; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .login-card h2 { color: var(--accent); margin-bottom: 25px; font-size: 24px; }
+        .login-screen { height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: var(--card-bg); padding: 40px; border-radius: 20px; border: 2px solid var(--accent); text-align: center; width: 100%; max-width: 400px; box-shadow: 0 0 30px var(--accent-glow); }
+        .login-card h2 { color: var(--accent); margin-bottom: 25px; font-size: 26px; text-shadow: 0 0 10px var(--accent-glow); }
 
         /* Main App Layout */
-        .main-app { display: none; max-width: 1300px; margin: auto; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
-        .header h1 { color: var(--accent); font-size: 26px; }
+        .main-app { display: none; max-width: 1400px; margin: auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid var(--border-color); padding-bottom: 20px; }
+        .header h1 { color: var(--accent); font-size: 28px; text-shadow: 0 0 10px var(--accent-glow); }
         .header p { color: var(--text-muted); font-size: 14px; margin-top: 5px; }
 
         /* Utility Buttons */
         .btn-group { display: flex; gap: 10px; }
-        button { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: all 0.2s ease; font-size: 14px; }
-        .btn-primary { background: var(--accent); color: #000; }
-        .btn-primary:hover { background: var(--accent-hover); }
-        .btn-success { background: var(--success); color: #000; }
+        button { padding: 12px 22px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: all 0.3s ease; font-size: 14px; text-transform: uppercase; }
+        .btn-primary { background: linear-gradient(45deg, var(--accent), #00b9de); color: #000; box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent); }
+        .btn-success { background: linear-gradient(45deg, var(--success), #00bbf9); color: #000; }
         .btn-danger { background: var(--danger); color: #fff; }
-        .btn-secondary { background: #31374a; color: #fff; }
+        .btn-secondary { background: #252b41; color: #fff; border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: #313958; }
 
         /* Form Styling */
-        .form-container { background: var(--card-bg); padding: 25px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 30px; }
-        .form-title { font-size: 18px; color: var(--accent); margin-bottom: 20px; font-weight: 600; }
-        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .form-container { background: var(--card-bg); padding: 30px; border-radius: 18px; border: 1px solid var(--border-color); margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .form-title { font-size: 20px; color: var(--accent); margin-bottom: 25px; font-weight: 600; letter-spacing: 0.5px; }
+        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
         .input-box { display: flex; flex-direction: column; gap: 8px; }
-        .input-box label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-        input[type="text"], input[type="date"], input[type="password"] { background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; color: #fff; font-size: 14px; width: 100%; }
-        input:focus { border-color: var(--accent); outline: none; }
+        .input-box label { font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         
+        input[type="text"], input[type="date"], input[type="password"] { 
+            background: var(--input-bg); border: 1px solid var(--border-color); padding: 14px; 
+            border-radius: 8px; color: #fff; font-size: 15px; width: 100%; transition: all 0.3s;
+        }
+        input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 10px var(--accent-glow); background: #202642; }
+        
+        /* Vehicle Number Special Highlight */
+        #vehNo { font-weight: bold; letter-spacing: 1px; color: #fff; border-left: 4px solid var(--accent); }
+
         /* File Input Wrapper */
-        .file-wrapper { background: #252a37; border: 1px dashed var(--border-color); padding: 8px; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; }
-        .file-wrapper input[type="file"] { color: var(--text-muted); font-size: 12px; width: 75%; }
+        .file-wrapper { background: #1a1f36; border: 1px dashed #3d497c; padding: 10px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; margin-top: 5px; }
+        .file-wrapper input[type="file"] { color: var(--text-muted); font-size: 12px; width: 100%; cursor: pointer; }
 
         /* Table Styling */
-        .table-section { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .table-section { background: var(--card-bg); border-radius: 18px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background: #1e222d; color: var(--accent); padding: 16px; font-size: 14px; font-weight: 600; border-bottom: 2px solid var(--border-color); }
-        td { padding: 16px; border-bottom: 1px solid var(--border-color); font-size: 14px; vertical-align: middle; }
-        tr:hover { background: rgba(255,255,255,0.02); }
+        th { background: #161b30; color: var(--accent); padding: 18px; font-size: 14px; font-weight: 700; border-bottom: 2px solid var(--border-color); text-transform: uppercase; }
+        td { padding: 18px; border-bottom: 1px solid var(--border-color); font-size: 14px; vertical-align: middle; }
+        tr:hover { background: rgba(255,255,255,0.03); }
 
         /* Status & Badges */
-        .date-badge { display: inline-block; padding: 6px 10px; border-radius: 6px; font-weight: 600; font-size: 13px; }
-        .expired { background: rgba(255, 77, 77, 0.15); color: var(--danger); border: 1px solid var(--danger); animation: pulse 1.5s infinite; }
-        .upcoming { background: rgba(255, 183, 3, 0.15); color: var(--warning); border: 1px solid var(--warning); }
-        .normal { color: #fff; }
+        .date-badge { display: inline-block; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 13px; text-align: center; }
+        .expired { background: rgba(255, 56, 56, 0.2); color: #ff5252; border: 1px solid var(--danger); animation: pulse 1.5s infinite; }
+        .upcoming { background: rgba(255, 183, 3, 0.2); color: #ffd166; border: 1px solid var(--warning); }
+        .normal { background: rgba(0, 245, 212, 0.1); color: #00f5d4; }
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* Document Links */
+        /* Document Links - Colorful Badges */
         .doc-link-group { display: flex; flex-wrap: wrap; gap: 6px; }
-        .doc-chip { display: inline-flex; align-items: center; background: #252a37; color: var(--accent); padding: 4px 8px; border-radius: 4px; text-decoration: none; font-size: 12px; border: 1px solid #3a4154; font-weight: 500; }
-        .doc-chip:hover { background: var(--accent); color: #000; }
-        .doc-missing { color: #4a5568; font-size: 12px; font-style: italic; }
+        .doc-chip { display: inline-flex; align-items: center; background: #1f2647; color: #fff; padding: 6px 10px; border-radius: 6px; text-decoration: none; font-size: 12px; border: 1px solid #3d497c; font-weight: 600; transition: all 0.2s; }
+        .doc-chip:hover { background: var(--accent); color: #000; transform: scale(1.05); }
+        .doc-rc { border-color: var(--purple); color: #c77dff; }
+        .doc-rc:hover { background: var(--purple); color: #fff; }
+        .doc-missing { color: #5c6b9c; font-size: 12px; font-style: italic; }
 
         /* Action Buttons in Table */
         .action-cell { display: flex; gap: 8px; }
-        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 4px; }
-        .btn-edit { background: #ffb703; color: #000; }
-        .btn-delete { background: #ff4d4d; color: #fff; }
+        .btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 6px; text-transform: none; }
+        .btn-edit { background: var(--warning); color: #000; }
+        .btn-delete { background: var(--danger); color: #fff; }
 
         /* Notification Panel */
-        .alert-panel { background: rgba(255, 77, 77, 0.1); border-left: 4px solid var(--danger); padding: 15px; border-radius: 8px; margin-bottom: 25px; display: none; }
-        .alert-panel h4 { color: var(--danger); margin-bottom: 5px; }
-        .alert-panel ul { list-style-position: inside; color: #f7fafc; font-size: 14px; }
+        .alert-panel { background: rgba(255, 56, 56, 0.15); border: 1px solid var(--danger); padding: 20px; border-radius: 12px; margin-bottom: 35px; display: none; box-shadow: 0 0 15px rgba(255, 56, 56, 0.2); }
+        .alert-panel h4 { color: #ff5252; margin-bottom: 10px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+        .alert-panel ul { list-style-position: inside; color: #f7fafc; font-size: 14px; line-height: 1.6; }
     </style>
 </head>
 <body>
 
+<!-- Login Section -->
 <div id="loginSection" class="login-screen">
     <div class="login-card">
         <h2>Asma's Online Service</h2>
@@ -101,11 +113,12 @@
     </div>
 </div>
 
+<!-- Main Application Section -->
 <div id="appSection" class="main-app">
     <div class="header">
         <div>
             <h1>Asma's Online Service Portal</h1>
-            <p>RTO Documents & Expiry Track System</p>
+            <p>Premium RTO Documents & Expiry Tracker</p>
         </div>
         <div class="btn-group">
             <button class="btn-success" onclick="downloadBackup()">Backup Download</button>
@@ -114,11 +127,13 @@
         </div>
     </div>
 
+    <!-- Alert Panel for Expired Items -->
     <div id="alertPanel" class="alert-panel">
         <h4>⚠️ അടിയന്തിര ശ്രദ്ധയ്ക്ക് (Expiry Alerts)</h4>
         <ul id="alertList"></ul>
     </div>
 
+    <!-- Input Form -->
     <div class="form-container">
         <div class="form-title" id="formTitle">പുതിയ കസ്റ്റമർ വിവരങ്ങൾ ചേർക്കുക</div>
         <input type="hidden" id="editId">
@@ -129,7 +144,11 @@
             </div>
             <div class="input-box">
                 <label>Vehicle Number</label>
-                <input type="text" id="vehNo" placeholder="KL-10-AA-1234">
+                <input type="text" id="vehNo" placeholder="KL-10-AA-1234" oninput="formatVehicleNumber(this)">
+            </div>
+            <div class="input-box">
+                <label>RC Book File (New)</label>
+                <div class="file-wrapper"><input type="file" id="rcFile"></div>
             </div>
             <div class="input-box">
                 <label>Insurance Expiry</label>
@@ -162,12 +181,13 @@
                 <div class="file-wrapper"><input type="file" id="renFile"></div>
             </div>
         </div>
-        <div style="margin-top: 25px; display: flex; gap: 10px;">
+        <div style="margin-top: 35px; display: flex; gap: 12px;">
             <button class="btn-primary" id="saveBtn" onclick="saveData()">Save Customer</button>
             <button class="btn-secondary" id="cancelBtn" style="display:none;" onclick="resetForm()">Cancel Edit</button>
         </div>
     </div>
 
+    <!-- Data Table Section -->
     <div class="table-section">
         <div class="table-wrapper">
             <table>
@@ -180,7 +200,7 @@
                         <th>Fitness</th>
                         <th>PUC</th>
                         <th>Renewal</th>
-                        <th>Documents</th>
+                        <th>Uploaded Documents</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -201,6 +221,35 @@
         } else {
             alert("ദയവായി ഒരു Password നൽകുക!");
         }
+    }
+
+    function formatVehicleNumber(input) {
+        let val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        let formatted = '';
+
+        if (val.length > 0) { formatted += val.substring(0, 2); }
+        if (val.length > 2) { formatted += '-' + val.substring(2, 4); }
+        if (val.length > 4) {
+            let remaining = val.substring(4);
+            let letters = remaining.replace(/[0-9]/g, '');
+            let numbers = remaining.replace(/[^0-9]/g, '');
+            
+            if (letters.length > 0) { formatted += '-' + letters; }
+            if (numbers.length > 0) { formatted += '-' + numbers.substring(0, 4); }
+        }
+
+        if(formatted.endsWith('-')) { formatted = formatted.slice(0, -1); }
+        input.value = formatted;
+    }
+
+    // YYYY-MM-DD തീയതിയെ DD/MM/YYYY ഫോർമാറ്റിലേക്ക് മാറ്റുന്ന ഫംഗ്ഷൻ
+    function formatToDDMMYYYY(dateStr) {
+        if (!dateStr) return '---';
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+        return dateStr;
     }
 
     const toBase64 = file => new Promise((resolve) => {
@@ -227,6 +276,7 @@
             return existingRecord ? existingRecord[key] : null;
         };
 
+        const rcDoc = await getFileData('rcFile', 'rcDoc');
         const insDoc = await getFileData('insFile', 'insDoc');
         const taxDoc = await getFileData('taxFile', 'taxDoc');
         const perDoc = await getFileData('perFile', 'perDoc');
@@ -244,6 +294,7 @@
             fitDate: document.getElementById('fitDate').value,
             pucDate: document.getElementById('pucDate').value,
             renDate: document.getElementById('renDate').value,
+            rcDoc: rcDoc,
             insDoc: insDoc,
             taxDoc: taxDoc,
             perDoc: perDoc,
@@ -297,6 +348,7 @@
         document.getElementById('pucDate').value = "";
         document.getElementById('renDate').value = "";
         
+        document.getElementById('rcFile').value = "";
         document.getElementById('insFile').value = "";
         document.getElementById('taxFile').value = "";
         document.getElementById('perFile').value = "";
@@ -310,7 +362,7 @@
     }
 
     function getDateStatus(dateStr) {
-        if(!dateStr) return { class: 'normal', label: 'തീയതി നൽകിയിട്ടില്ല' };
+        if(!dateStr) return { class: 'normal', label: '---' };
         const today = new Date();
         today.setHours(0,0,0,0);
         const expDate = new Date(dateStr);
@@ -318,13 +370,16 @@
         
         const diffTime = expDate - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        // ടേബിളിൽ കാണിക്കാൻ DD/MM/YYYY ഫോർമാറ്റ് ആക്കുന്നു
+        const formattedDate = formatToDDMMYYYY(dateStr);
 
         if(diffDays <= 0) {
-            return { class: 'expired', label: `${dateStr} (കഴിഞ്ഞു)` };
+            return { class: 'expired', label: `${formattedDate} (കഴിഞ്ഞു)` };
         } else if(diffDays <= 2) {
-            return { class: 'upcoming', label: `${dateStr} (${diffDays} ദിവസം ബാക്കി)` };
+            return { class: 'upcoming', label: `${formattedDate} (${diffDays} day)` };
         }
-        return { class: 'normal', label: dateStr };
+        return { class: 'normal', label: formattedDate };
     }
 
     function renderTable() {
@@ -344,14 +399,16 @@
             const puc = getDateStatus(c.pucDate);
             const ren = getDateStatus(c.renDate);
 
-            if(ins.class === 'expired' || ins.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Insurance കാലാവധി ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
-            if(tax.class === 'expired' || tax.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Road Tax കാലാവധി ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
-            if(per.class === 'expired' || per.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Permit കാലാവധി ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
-            if(fit.class === 'expired' || fit.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Fitness കാലാവധി ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
-            if(puc.class === 'expired' || puc.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - PUC Pollution കാലാവധി ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
-            if(ren.class === 'expired' || ren.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Renewal കാലാവധി ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
+            // അലേർട്ടുകളിലും പുതിയ ഡേറ്റ് ഫോർമാറ്റ് ഉപയോഗിക്കുന്നു
+            if(ins.class === 'expired' || ins.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Insurance കാലാവധി (${formatToDDMMYYYY(c.insDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
+            if(tax.class === 'expired' || tax.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Road Tax കാലാവധി (${formatToDDMMYYYY(c.taxDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
+            if(per.class === 'expired' || per.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Permit കാലാവധി (${formatToDDMMYYYY(c.perDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
+            if(fit.class === 'expired' || fit.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Fitness കാലാവധി (${formatToDDMMYYYY(c.fitDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
+            if(puc.class === 'expired' || puc.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - PUC Pollution കാലാവധി (${formatToDDMMYYYY(c.pucDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
+            if(ren.class === 'expired' || ren.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Renewal കാലാവധി (${formatToDDMMYYYY(c.renDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
 
             let docHtml = `<div class="doc-link-group">`;
+            if(c.rcDoc) docHtml += `<a href="${c.rcDoc}" download="RC_${c.veh}.png" class="doc-chip doc-rc" target="_blank">RC 📄</a>`;
             if(c.insDoc) docHtml += `<a href="${c.insDoc}" download="Insurance_${c.veh}.png" class="doc-chip" target="_blank">Ins 📄</a>`;
             if(c.taxDoc) docHtml += `<a href="${c.taxDoc}" download="Tax_${c.veh}.png" class="doc-chip" target="_blank">Tax 📄</a>`;
             if(c.perDoc) docHtml += `<a href="${c.perDoc}" download="Permit_${c.veh}.png" class="doc-chip" target="_blank">Permit 📄</a>`;
@@ -364,7 +421,7 @@
 
             tbody.innerHTML += `
                 <tr>
-                    <td><strong>${c.name}</strong><br><span style="color:var(--accent); font-weight:bold;">${c.veh}</span></td>
+                    <td><strong>${c.name}</strong><br><span style="color:var(--accent); font-weight:bold; font-size:15px; letter-spacing:0.5px;">${c.veh}</span></td>
                     <td><span class="date-badge ${ins.class}">${ins.label}</span></td>
                     <td><span class="date-badge ${tax.class}">${tax.label}</span></td>
                     <td><span class="date-badge ${per.class}">${per.label}</span></td>
@@ -394,7 +451,7 @@
     }
 
     function downloadBackup() {
-        if(database.length === 0) return alert("ഡൗൺലോഡ് ചെയ്യാൻ ഡാറ്റയൊന്നും നിലവിലില്ല!");
+        if(database.length === 0) return alert("ഡൗൺലോഡ് ചെയ്യാൻ ഡാറ്റയൊന്നും ഇൻപുട്ട് ചെയ്തിട്ടില്ല!");
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(database));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
