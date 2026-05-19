@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asma's Online Service - Premium RTO Portal</title>
+    <title>Asma's Online Service - Premium RTO & Document Portal</title>
     <style>
         :root {
             --bg-color: #0a0c16;
@@ -40,7 +40,8 @@
         .btn-primary { background: linear-gradient(45deg, var(--accent), #00b9de); color: #000; box-shadow: 0 4px 15px var(--accent-glow); }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent); }
         .btn-success { background: linear-gradient(45deg, var(--success), #00bbf9); color: #000; }
-        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger { background: var(--danger); color: #fff; box-shadow: 0 4px 15px rgba(255, 56, 56, 0.4); }
+        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--danger); }
         .btn-secondary { background: #252b41; color: #fff; border: 1px solid var(--border-color); }
         .btn-secondary:hover { background: #313958; }
 
@@ -70,22 +71,27 @@
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th { background: #161b30; color: var(--accent); padding: 18px; font-size: 14px; font-weight: 700; border-bottom: 2px solid var(--border-color); text-transform: uppercase; }
         td { padding: 18px; border-bottom: 1px solid var(--border-color); font-size: 14px; vertical-align: middle; }
-        tr:hover { background: rgba(255,255,255,0.03); }
+        
+        tr.row-has-expired { background: rgba(255, 56, 56, 0.08) !important; border-left: 4px solid var(--danger); }
+        tr.row-has-expired:hover { background: rgba(255, 56, 56, 0.12) !important; }
+        tr:hover { background: rgba(255, 255, 255, 0.03); }
 
         /* Status & Badges */
         .date-badge { display: inline-block; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 13px; text-align: center; }
-        .expired { background: rgba(255, 56, 56, 0.2); color: #ff5252; border: 1px solid var(--danger); animation: pulse 1.5s infinite; }
+        .expired { background: #ff3838; color: #fff; border: 1px solid var(--danger); animation: pulse 1.5s infinite; box-shadow: 0 0 10px rgba(255, 56, 56, 0.5); }
         .upcoming { background: rgba(255, 183, 3, 0.2); color: #ffd166; border: 1px solid var(--warning); }
         .normal { background: rgba(0, 245, 212, 0.1); color: #00f5d4; }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        /* Document Links - Colorful Badges */
+        /* Document Links */
         .doc-link-group { display: flex; flex-wrap: wrap; gap: 6px; }
         .doc-chip { display: inline-flex; align-items: center; background: #1f2647; color: #fff; padding: 6px 10px; border-radius: 6px; text-decoration: none; font-size: 12px; border: 1px solid #3d497c; font-weight: 600; transition: all 0.2s; }
         .doc-chip:hover { background: var(--accent); color: #000; transform: scale(1.05); }
         .doc-rc { border-color: var(--purple); color: #c77dff; }
         .doc-rc:hover { background: var(--purple); color: #fff; }
+        .doc-aadhar { border-color: #ffb703; color: #ffb703; }
+        .doc-aadhar:hover { background: #ffb703; color: #000; }
         .doc-missing { color: #5c6b9c; font-size: 12px; font-style: italic; }
 
         /* Action Buttons in Table */
@@ -98,6 +104,13 @@
         .alert-panel { background: rgba(255, 56, 56, 0.15); border: 1px solid var(--danger); padding: 20px; border-radius: 12px; margin-bottom: 35px; display: none; box-shadow: 0 0 15px rgba(255, 56, 56, 0.2); }
         .alert-panel h4 { color: #ff5252; margin-bottom: 10px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
         .alert-panel ul { list-style-position: inside; color: #f7fafc; font-size: 14px; line-height: 1.6; }
+
+        /* Controls Section (Search & Filter) */
+        .controls-section { display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #131930; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .search-box-wrapper { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 400px; }
+        .search-input { background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; color: #fff; font-size: 14px; width: 100%; }
+        .filter-group { display: flex; gap: 10px; align-items: center; }
+        .filter-title { font-size: 14px; font-weight: bold; color: var(--text-muted); }
     </style>
 </head>
 <body>
@@ -135,7 +148,7 @@
 
     <!-- Input Form -->
     <div class="form-container">
-        <div class="form-title" id="formTitle">പുതിയ കസ്റ്റമർ വിവരങ്ങൾ ചേർക്കുക</div>
+        <div class="form-title" id="formTitle">പുതിയ കസ്റ്റമർ വിവരങ്ങൾ ചേർക്കുക (Add Customer)</div>
         <input type="hidden" id="editId">
         <div class="grid-inputs">
             <div class="input-box">
@@ -143,12 +156,20 @@
                 <input type="text" id="custName" placeholder="ഉടമയുടെ പേര്">
             </div>
             <div class="input-box">
+                <label>Phone Number</label>
+                <input type="text" id="custPhone" placeholder="ഫോൺ നമ്പർ നൽകുക">
+            </div>
+            <div class="input-box">
                 <label>Vehicle Number</label>
                 <input type="text" id="vehNo" placeholder="KL-10-AA-1234" oninput="formatVehicleNumber(this)">
             </div>
             <div class="input-box">
-                <label>RC Book File (New)</label>
+                <label>RC Book File</label>
                 <div class="file-wrapper"><input type="file" id="rcFile"></div>
+            </div>
+            <div class="input-box">
+                <label>Aadhaar Card File (Upload)</label>
+                <div class="file-wrapper"><input type="file" id="aadharFile"></div>
             </div>
             <div class="input-box">
                 <label>Insurance Expiry</label>
@@ -187,6 +208,18 @@
         </div>
     </div>
 
+    <!-- SEARCH & FILTER CONTROLS SECTION -->
+    <div class="controls-section">
+        <div class="search-box-wrapper">
+            <input type="text" id="searchBar" class="search-input" placeholder="🔍 പേര്, വണ്ടി നമ്പർ, ഫോൺ അടിച്ചു സെർച്ച് ചെയ്യുക..." oninput="handleSearch()">
+        </div>
+        <div class="filter-group">
+            <div class="filter-title" id="filterStatusText">കാണിക്കുന്നത്: എല്ലാ കസ്റ്റമേഴ്സിനെയും</div>
+            <button class="btn-secondary" style="padding: 8px 14px; font-size: 12px;" onclick="filterTable('all')">Show All</button>
+            <button class="btn-danger" style="padding: 8px 14px; font-size: 12px; background: #ff3838;" onclick="filterTable('expired')">🛑 Expired Only</button>
+        </div>
+    </div>
+
     <!-- Data Table Section -->
     <div class="table-section">
         <div class="table-wrapper">
@@ -212,6 +245,8 @@
 
 <script>
     let database = JSON.parse(localStorage.getItem('asma_advanced_rto_db')) || [];
+    let currentFilter = 'all';
+    let searchQuery = '';
 
     function checkLogin() {
         if(document.getElementById('passInput').value !== "") {
@@ -242,7 +277,6 @@
         input.value = formatted;
     }
 
-    // YYYY-MM-DD തീയതിയെ DD/MM/YYYY ഫോർമാറ്റിലേക്ക് മാറ്റുന്ന ഫംഗ്ഷൻ
     function formatToDDMMYYYY(dateStr) {
         if (!dateStr) return '---';
         const parts = dateStr.split('-');
@@ -260,8 +294,14 @@
         reader.onerror = () => resolve(null);
     });
 
+    function handleSearch() {
+        searchQuery = document.getElementById('searchBar').value.toLowerCase().trim();
+        renderTable();
+    }
+
     async function saveData() {
         const name = document.getElementById('custName').value.trim();
+        const phone = document.getElementById('custPhone').value.trim();
         const veh = document.getElementById('vehNo').value.trim();
         if(!name || !veh) return alert("ഉടമയുടെ പേരും വണ്ടി നമ്പറും നിർബന്ധമാണ്!");
 
@@ -277,6 +317,7 @@
         };
 
         const rcDoc = await getFileData('rcFile', 'rcDoc');
+        const aadharDoc = await getFileData('aadharFile', 'aadharDoc');
         const insDoc = await getFileData('insFile', 'insDoc');
         const taxDoc = await getFileData('taxFile', 'taxDoc');
         const perDoc = await getFileData('perFile', 'perDoc');
@@ -287,6 +328,7 @@
         const customerData = {
             id: editId ? Number(editId) : Date.now(),
             name: name,
+            phone: phone,
             veh: veh,
             insDate: document.getElementById('insDate').value,
             taxDate: document.getElementById('taxDate').value,
@@ -295,6 +337,7 @@
             pucDate: document.getElementById('pucDate').value,
             renDate: document.getElementById('renDate').value,
             rcDoc: rcDoc,
+            aadharDoc: aadharDoc,
             insDoc: insDoc,
             taxDoc: taxDoc,
             perDoc: perDoc,
@@ -322,6 +365,7 @@
 
         document.getElementById('editId').value = c.id;
         document.getElementById('custName').value = c.name;
+        document.getElementById('custPhone').value = c.phone || '';
         document.getElementById('vehNo').value = c.veh;
         document.getElementById('insDate').value = c.insDate;
         document.getElementById('taxDate').value = c.taxDate;
@@ -340,6 +384,7 @@
     function resetForm() {
         document.getElementById('editId').value = "";
         document.getElementById('custName').value = "";
+        document.getElementById('custPhone').value = "";
         document.getElementById('vehNo').value = "";
         document.getElementById('insDate').value = "";
         document.getElementById('taxDate').value = "";
@@ -349,6 +394,7 @@
         document.getElementById('renDate').value = "";
         
         document.getElementById('rcFile').value = "";
+        document.getElementById('aadharFile').value = "";
         document.getElementById('insFile').value = "";
         document.getElementById('taxFile').value = "";
         document.getElementById('perFile').value = "";
@@ -356,13 +402,13 @@
         document.getElementById('pucFile').value = "";
         document.getElementById('renFile').value = "";
 
-        document.getElementById('formTitle').innerText = "പുതിയ കസ്റ്റമർ വിവരങ്ങൾ ചേർക്കുക";
+        document.getElementById('formTitle').innerText = "പുതിയ കസ്റ്റമർ വിവരങ്ങൾ ചേർക്കുക (Add Customer)";
         document.getElementById('saveBtn').innerText = "Save Customer";
         document.getElementById('cancelBtn').style.display = "none";
     }
 
     function getDateStatus(dateStr) {
-        if(!dateStr) return { class: 'normal', label: '---' };
+        if(!dateStr) return { class: 'normal', label: '---', isExpired: false };
         const today = new Date();
         today.setHours(0,0,0,0);
         const expDate = new Date(dateStr);
@@ -370,16 +416,24 @@
         
         const diffTime = expDate - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
-        // ടേബിളിൽ കാണിക്കാൻ DD/MM/YYYY ഫോർമാറ്റ് ആക്കുന്നു
         const formattedDate = formatToDDMMYYYY(dateStr);
 
         if(diffDays <= 0) {
-            return { class: 'expired', label: `${formattedDate} (കഴിഞ്ഞു)` };
+            return { class: 'expired', label: `${formattedDate} (കഴിഞ്ഞു)`, isExpired: true };
         } else if(diffDays <= 2) {
-            return { class: 'upcoming', label: `${formattedDate} (${diffDays} day)` };
+            return { class: 'upcoming', label: `${formattedDate} (${diffDays} day)`, isExpired: false };
         }
-        return { class: 'normal', label: formattedDate };
+        return { class: 'normal', label: formattedDate, isExpired: false };
+    }
+
+    function filterTable(type) {
+        currentFilter = type;
+        if(type === 'expired') {
+            document.getElementById('filterStatusText').innerText = "കാണിക്കുന്നത്: കാലാവധി കഴിഞ്ഞ വണ്ടികൾ മാത്രം 🛑";
+        } else {
+            document.getElementById('filterStatusText').innerText = "കാണിക്കുന്നത്: എല്ലാ കസ്റ്റമേഴ്സിനെയും";
+        }
+        renderTable();
     }
 
     function renderTable() {
@@ -392,6 +446,15 @@
         let alertCount = 0;
 
         database.forEach(c => {
+            const phoneStr = c.phone ? c.phone.toLowerCase() : '';
+            const matchesSearch = c.name.toLowerCase().includes(searchQuery) || 
+                                  c.veh.toLowerCase().includes(searchQuery) ||
+                                  phoneStr.includes(searchQuery);
+                                  
+            if (searchQuery !== '' && !matchesSearch) {
+                return;
+            }
+
             const ins = getDateStatus(c.insDate);
             const tax = getDateStatus(c.taxDate);
             const per = getDateStatus(c.perDate);
@@ -399,16 +462,22 @@
             const puc = getDateStatus(c.pucDate);
             const ren = getDateStatus(c.renDate);
 
-            // അലേർട്ടുകളിലും പുതിയ ഡേറ്റ് ഫോർമാറ്റ് ഉപയോഗിക്കുന്നു
-            if(ins.class === 'expired' || ins.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Insurance കാലാവധി (${formatToDDMMYYYY(c.insDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
-            if(tax.class === 'expired' || tax.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Road Tax കാലാവധി (${formatToDDMMYYYY(c.taxDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
-            if(per.class === 'expired' || per.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Permit കാലാവധി (${formatToDDMMYYYY(c.perDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
-            if(fit.class === 'expired' || fit.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Fitness കാലാവധി (${formatToDDMMYYYY(c.fitDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
-            if(puc.class === 'expired' || puc.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - PUC Pollution കാലാവധി (${formatToDDMMYYYY(c.pucDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
-            if(ren.class === 'expired' || ren.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Renewal കാലാവധി (${formatToDDMMYYYY(c.renDate)}) ശ്രദ്ധിക്കുക!</li>`; alertCount++; }
+            const hasAnyExpired = ins.isExpired || tax.isExpired || per.isExpired || fit.isExpired || puc.isExpired || ren.isExpired;
+
+            if(currentFilter === 'expired' && !hasAnyExpired) {
+                return; 
+            }
+
+            if(ins.class === 'expired' || ins.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Insurance  (${formatToDDMMYYYY(c.insDate)})</li>`; alertCount++; }
+            if(tax.class === 'expired' || tax.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Road Tax (${formatToDDMMYYYY(c.taxDate)})</li>`; alertCount++; }
+            if(per.class === 'expired' || per.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Permit (${formatToDDMMYYYY(c.perDate)})</li>`; alertCount++; }
+            if(fit.class === 'expired' || fit.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Fitness (${formatToDDMMYYYY(c.fitDate)})</li>`; alertCount++; }
+            if(puc.class === 'expired' || puc.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - PUC Pollution (${formatToDDMMYYYY(c.pucDate)})</li>`; alertCount++; }
+            if(ren.class === 'expired' || ren.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Renewal (${formatToDDMMYYYY(c.renDate)})</li>`; alertCount++; }
 
             let docHtml = `<div class="doc-link-group">`;
             if(c.rcDoc) docHtml += `<a href="${c.rcDoc}" download="RC_${c.veh}.png" class="doc-chip doc-rc" target="_blank">RC 📄</a>`;
+            if(c.aadharDoc) docHtml += `<a href="${c.aadharDoc}" download="Aadhar_${c.name}.png" class="doc-chip doc-aadhar" target="_blank">Aadhaar 📄</a>`;
             if(c.insDoc) docHtml += `<a href="${c.insDoc}" download="Insurance_${c.veh}.png" class="doc-chip" target="_blank">Ins 📄</a>`;
             if(c.taxDoc) docHtml += `<a href="${c.taxDoc}" download="Tax_${c.veh}.png" class="doc-chip" target="_blank">Tax 📄</a>`;
             if(c.perDoc) docHtml += `<a href="${c.perDoc}" download="Permit_${c.veh}.png" class="doc-chip" target="_blank">Permit 📄</a>`;
@@ -419,9 +488,16 @@
             if(docHtml === `<div class="doc-link-group">`) docHtml = `<span class="doc-missing">ഫയലുകൾ ഇല്ല</span>`;
             else docHtml += `</div>`;
 
+            const rowClass = hasAnyExpired ? 'row-has-expired' : '';
+            const displayPhone = c.phone ? c.phone : '---';
+
             tbody.innerHTML += `
-                <tr>
-                    <td><strong>${c.name}</strong><br><span style="color:var(--accent); font-weight:bold; font-size:15px; letter-spacing:0.5px;">${c.veh}</span></td>
+                <tr class="${rowClass}">
+                    <td>
+                        <strong>${c.name}</strong><br>
+                        <span style="color:#8fa0dd; font-size:13px;">📞 ${displayPhone}</span><br>
+                        <span style="color:var(--accent); font-weight:bold; font-size:15px; letter-spacing:0.5px;">${c.veh}</span>
+                    </td>
                     <td><span class="date-badge ${ins.class}">${ins.label}</span></td>
                     <td><span class="date-badge ${tax.class}">${tax.label}</span></td>
                     <td><span class="date-badge ${per.class}">${per.label}</span></td>
