@@ -92,6 +92,10 @@
         .doc-rc:hover { background: var(--purple); color: #fff; }
         .doc-aadhar { border-color: #ffb703; color: #ffb703; }
         .doc-aadhar:hover { background: #ffb703; color: #000; }
+        .doc-welfare { border-color: #00f5d4; color: #00f5d4; }
+        .doc-welfare:hover { background: #00f5d4; color: #000; }
+        .doc-pan { border-color: #ff5252; color: #ff5252; }
+        .doc-pan:hover { background: #ff5252; color: #fff; }
         .doc-missing { color: #5c6b9c; font-size: 12px; font-style: italic; }
 
         /* Action Buttons in Table */
@@ -170,6 +174,14 @@
             <div class="input-box">
                 <label>Aadhaar Card File (Upload)</label>
                 <div class="file-wrapper"><input type="file" id="aadharFile"></div>
+            </div>
+            <div class="input-box">
+                <label>Welfare Card File (Upload)</label>
+                <div class="file-wrapper"><input type="file" id="welfareFile"></div>
+            </div>
+            <div class="input-box">
+                <label>PAN Card File (Upload)</label>
+                <div class="file-wrapper"><input type="file" id="panFile"></div>
             </div>
             <div class="input-box">
                 <label>Insurance Expiry</label>
@@ -318,6 +330,8 @@
 
         const rcDoc = await getFileData('rcFile', 'rcDoc');
         const aadharDoc = await getFileData('aadharFile', 'aadharDoc');
+        const welfareDoc = await getFileData('welfareFile', 'welfareDoc');
+        const panDoc = await getFileData('panFile', 'panDoc');
         const insDoc = await getFileData('insFile', 'insDoc');
         const taxDoc = await getFileData('taxFile', 'taxDoc');
         const perDoc = await getFileData('perFile', 'perDoc');
@@ -338,6 +352,8 @@
             renDate: document.getElementById('renDate').value,
             rcDoc: rcDoc,
             aadharDoc: aadharDoc,
+            welfareDoc: welfareDoc,
+            panDoc: panDoc,
             insDoc: insDoc,
             taxDoc: taxDoc,
             perDoc: perDoc,
@@ -395,6 +411,8 @@
         
         document.getElementById('rcFile').value = "";
         document.getElementById('aadharFile').value = "";
+        document.getElementById('welfareFile').value = "";
+        document.getElementById('panFile').value = "";
         document.getElementById('insFile').value = "";
         document.getElementById('taxFile').value = "";
         document.getElementById('perFile').value = "";
@@ -468,7 +486,7 @@
                 return; 
             }
 
-            if(ins.class === 'expired' || ins.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Insurance  (${formatToDDMMYYYY(c.insDate)})</li>`; alertCount++; }
+            if(ins.class === 'expired' || ins.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Insurance (${formatToDDMMYYYY(c.insDate)})</li>`; alertCount++; }
             if(tax.class === 'expired' || tax.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Road Tax (${formatToDDMMYYYY(c.taxDate)})</li>`; alertCount++; }
             if(per.class === 'expired' || per.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Permit (${formatToDDMMYYYY(c.perDate)})</li>`; alertCount++; }
             if(fit.class === 'expired' || fit.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Fitness (${formatToDDMMYYYY(c.fitDate)})</li>`; alertCount++; }
@@ -478,6 +496,8 @@
             let docHtml = `<div class="doc-link-group">`;
             if(c.rcDoc) docHtml += `<a href="${c.rcDoc}" download="RC_${c.veh}.png" class="doc-chip doc-rc" target="_blank">RC 📄</a>`;
             if(c.aadharDoc) docHtml += `<a href="${c.aadharDoc}" download="Aadhar_${c.name}.png" class="doc-chip doc-aadhar" target="_blank">Aadhaar 📄</a>`;
+            if(c.welfareDoc) docHtml += `<a href="${c.welfareDoc}" download="Welfare_${c.name}.png" class="doc-chip doc-welfare" target="_blank">Welfare 📄</a>`;
+            if(c.panDoc) docHtml += `<a href="${c.panDoc}" download="PAN_${c.name}.png" class="doc-chip doc-pan" target="_blank">PAN 📄</a>`;
             if(c.insDoc) docHtml += `<a href="${c.insDoc}" download="Insurance_${c.veh}.png" class="doc-chip" target="_blank">Ins 📄</a>`;
             if(c.taxDoc) docHtml += `<a href="${c.taxDoc}" download="Tax_${c.veh}.png" class="doc-chip" target="_blank">Tax 📄</a>`;
             if(c.perDoc) docHtml += `<a href="${c.perDoc}" download="Permit_${c.veh}.png" class="doc-chip" target="_blank">Permit 📄</a>`;
