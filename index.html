@@ -2,579 +2,591 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asma's Online Service - Premium RTO & Document Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Asma's Premium RTO Suite | 3-Way Filter</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+        }
+
         :root {
-            --bg-color: #0a0c16;
-            --card-bg: #111424;
+            --bg-deep: #0a0c16;
+            --card-dark: #111424;
             --input-bg: #1a1f36;
-            --accent: #00f0ff;
-            --accent-glow: rgba(0, 240, 255, 0.3);
-            --text-main: #ffffff;
-            --text-muted: #8fa0dd;
-            --border-color: #252d53;
-            --danger: #ff3838;
-            --warning: #ffb703;
-            --success: #00f5d4;
-            --purple: #9d4edd;
+            --accent-cyan: #00f0ff;
+            --accent-glow: rgba(0, 240, 255, 0.4);
+            --text-light: #ffffff;
+            --text-soft: #8fa0dd;
+            --border-dim: #252d53;
+            --danger-fire: #ff3838;
+            --warning-gold: #ffb703;
+            --success-mint: #00f5d4;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-color); color: var(--text-main); padding-bottom: 50px; background-image: radial-gradient(circle at 50% 10%, #161b33 0%, var(--bg-color) 70%); }
-        
-        /* Login Screen */
-        .login-screen { height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: var(--card-bg); padding: 40px; border-radius: 20px; border: 2px solid var(--accent); text-align: center; width: 100%; max-width: 400px; box-shadow: 0 0 30px var(--accent-glow); }
-        .login-card h2 { color: var(--accent); margin-bottom: 25px; font-size: 26px; text-shadow: 0 0 10px var(--accent-glow); }
-
-        /* Main App Layout */
-        .main-app { display: none; max-width: 1400px; margin: auto; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid var(--border-color); padding-bottom: 20px; }
-        .header h1 { color: var(--accent); font-size: 28px; text-shadow: 0 0 10px var(--accent-glow); }
-        .header p { color: var(--text-muted); font-size: 14px; margin-top: 5px; }
-
-        /* Utility Buttons */
-        .btn-group { display: flex; gap: 10px; }
-        button { padding: 12px 22px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: all 0.3s ease; font-size: 14px; text-transform: uppercase; }
-        .btn-primary { background: linear-gradient(45deg, var(--accent), #00b9de); color: #000; box-shadow: 0 4px 15px var(--accent-glow); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent); }
-        .btn-success { background: linear-gradient(45deg, var(--success), #00bbf9); color: #000; }
-        .btn-danger { background: var(--danger); color: #fff; box-shadow: 0 4px 15px rgba(255, 56, 56, 0.4); }
-        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--danger); }
-        .btn-secondary { background: #252b41; color: #fff; border: 1px solid var(--border-color); }
-        .btn-secondary:hover { background: #313958; }
-
-        /* Form Styling */
-        .form-container { background: var(--card-bg); padding: 30px; border-radius: 18px; border: 1px solid var(--border-color); margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .form-title { font-size: 20px; color: var(--accent); margin-bottom: 25px; font-weight: 600; letter-spacing: 0.5px; }
-        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-        .input-box { display: flex; flex-direction: column; gap: 8px; }
-        .input-box label { font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        input[type="text"], input[type="date"], input[type="password"] { 
-            background: var(--input-bg); border: 1px solid var(--border-color); padding: 14px; 
-            border-radius: 8px; color: #fff; font-size: 15px; width: 100%; transition: all 0.3s;
+        body {
+            background: var(--bg-deep);
+            color: var(--text-light);
+            padding: 20px;
+            background-image: radial-gradient(circle at 20% 30%, #131a2c, #03050a);
         }
-        input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 10px var(--accent-glow); background: #202642; }
-        
-        /* Vehicle Number Special Highlight */
-        #vehNo { font-weight: bold; letter-spacing: 1px; color: #fff; border-left: 4px solid var(--accent); }
 
-        /* File Input Wrapper */
-        .file-wrapper { background: #1a1f36; border: 1px dashed #3d497c; padding: 10px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; margin-top: 5px; }
-        .file-wrapper input[type="file"] { color: var(--text-muted); font-size: 12px; width: 100%; cursor: pointer; }
-
-        /* Table Styling */
-        .table-section { background: var(--card-bg); border-radius: 18px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background: #161b30; color: var(--accent); padding: 18px; font-size: 14px; font-weight: 700; border-bottom: 2px solid var(--border-color); text-transform: uppercase; }
-        td { padding: 18px; border-bottom: 1px solid var(--border-color); font-size: 14px; vertical-align: middle; }
-        
-        tr.row-has-expired { background: rgba(255, 56, 56, 0.08) !important; border-left: 4px solid var(--danger); }
-        tr.row-has-expired:hover { background: rgba(255, 56, 56, 0.12) !important; }
-        tr:hover { background: rgba(255, 255, 255, 0.03); }
-
-        /* Status & Badges */
-        .date-badge { display: inline-block; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 13px; text-align: center; }
-        .expired { background: #ff3838; color: #fff; border: 1px solid var(--danger); animation: pulse 1.5s infinite; box-shadow: 0 0 10px rgba(255, 56, 56, 0.5); }
-        .upcoming { background: rgba(255, 183, 3, 0.2); color: #ffd166; border: 1px solid var(--warning); }
-        .normal { background: rgba(0, 245, 212, 0.1); color: #00f5d4; }
-
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-
-        /* Document Links */
-        .doc-link-group { display: flex; flex-wrap: wrap; gap: 6px; }
-        .doc-chip { display: inline-flex; align-items: center; background: #1f2647; color: #fff; padding: 6px 10px; border-radius: 6px; text-decoration: none; font-size: 12px; border: 1px solid #3d497c; font-weight: 600; transition: all 0.2s; }
-        .doc-chip:hover { background: var(--accent); color: #000; transform: scale(1.05); }
-        .doc-rc { border-color: var(--purple); color: #c77dff; }
-        .doc-rc:hover { background: var(--purple); color: #fff; }
-        .doc-aadhar { border-color: #ffb703; color: #ffb703; }
-        .doc-aadhar:hover { background: #ffb703; color: #000; }
-        .doc-welfare { border-color: #00f5d4; color: #00f5d4; }
-        .doc-welfare:hover { background: #00f5d4; color: #000; }
-        .doc-pan { border-color: #ff5252; color: #ff5252; }
-        .doc-pan:hover { background: #ff5252; color: #fff; }
-        .doc-missing { color: #5c6b9c; font-size: 12px; font-style: italic; }
-
-        /* Action Buttons in Table */
-        .action-cell { display: flex; gap: 8px; }
-        .btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 6px; text-transform: none; }
-        .btn-edit { background: var(--warning); color: #000; }
-        .btn-delete { background: var(--danger); color: #fff; }
-
-        /* Notification Panel */
-        .alert-panel { background: rgba(255, 56, 56, 0.15); border: 1px solid var(--danger); padding: 20px; border-radius: 12px; margin-bottom: 35px; display: none; box-shadow: 0 0 15px rgba(255, 56, 56, 0.2); }
-        .alert-panel h4 { color: #ff5252; margin-bottom: 10px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
-        .alert-panel ul { list-style-position: inside; color: #f7fafc; font-size: 14px; line-height: 1.6; }
-
-        /* Controls Section (Search & Filter) */
-        .controls-section { display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #131930; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .search-box-wrapper { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 400px; }
-        .search-input { background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; color: #fff; font-size: 14px; width: 100%; }
-        .filter-group { display: flex; gap: 10px; align-items: center; }
-        .filter-title { font-size: 14px; font-weight: bold; color: var(--text-muted); }
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-card {
+            background: var(--card-dark);
+            padding: 40px;
+            border-radius: 32px;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 40px var(--accent-glow);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-card h2 {
+            color: var(--accent-cyan);
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .login-card input {
+            background: var(--input-bg);
+            border: 1px solid var(--border-dim);
+            padding: 14px;
+            border-radius: 20px;
+            width: 100%;
+            color: white;
+        }
+        .main-dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .header-glow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border-dim);
+            padding-bottom: 20px;
+        }
+        .title h1 {
+            color: var(--accent-cyan);
+            font-size: 2rem;
+            text-shadow: 0 0 12px var(--accent-cyan);
+        }
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--card-dark);
+            border-radius: 24px;
+            padding: 18px 24px;
+            flex: 1;
+            min-width: 180px;
+            border: 1px solid var(--border-dim);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--text-soft);
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--accent-cyan);
+        }
+        .form-panel {
+            background: var(--card-dark);
+            border-radius: 28px;
+            padding: 28px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-dim);
+        }
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .input-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .input-field label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-soft);
+            text-transform: uppercase;
+        }
+        input, .file-wrapper input {
+            background: var(--input-bg);
+            border: 1px solid var(--border-dim);
+            padding: 12px;
+            border-radius: 16px;
+            color: white;
+            width: 100%;
+        }
+        .file-wrapper {
+            background: var(--input-bg);
+            border: 1px dashed #3d497c;
+            border-radius: 16px;
+            padding: 6px;
+        }
+        button {
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), #0088aa);
+            color: black;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .btn-danger {
+            background: var(--danger-fire);
+            color: white;
+        }
+        .btn-warning {
+            background: var(--warning-gold);
+            color: black;
+        }
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            background: var(--card-dark);
+            border-radius: 28px;
+            border: 1px solid var(--border-dim);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 18px 12px;
+            background: #0f1322;
+            color: var(--accent-cyan);
+        }
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .expired-badge {
+            background: var(--danger-fire);
+            padding: 6px 12px;
+            border-radius: 24px;
+            font-weight: bold;
+            font-size: 12px;
+            display: inline-block;
+            animation: pulseRed 1.2s infinite;
+        }
+        .upcoming-badge {
+            background: var(--warning-gold);
+            padding: 6px 12px;
+            border-radius: 24px;
+            color: black;
+            font-weight: bold;
+        }
+        @keyframes pulseRed {
+            0% { opacity: 1; background: #ff3838; }
+            50% { opacity: 0.7; background: #aa2222; }
+            100% { opacity: 1; background: #ff3838; }
+        }
+        .alert-banner {
+            background: rgba(255, 56, 56, 0.2);
+            border-left: 6px solid var(--danger-fire);
+            padding: 16px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .doc-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .doc-links a {
+            background: #1f2647;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .doc-links a:hover {
+            background: var(--accent-cyan);
+            color: black;
+        }
+        .active-filter {
+            opacity: 1 !important;
+            box-shadow: 0 0 10px currentColor;
+        }
+        @media (max-width: 700px) {
+            th, td { font-size: 12px; padding: 8px; }
+            .btn-sm { padding: 5px 10px; font-size: 11px; }
+        }
     </style>
 </head>
 <body>
 
-<!-- Login Section -->
-<div id="loginSection" class="login-screen">
+<div id="loginScreen" class="login-container">
     <div class="login-card">
-        <h2>Asma's Online Service</h2>
-        <div class="input-box" style="margin-bottom: 20px;">
-            <input type="password" id="passInput" placeholder="Password നൽകുക" onkeypress="if(event.key === 'Enter') checkLogin()">
-        </div>
-        <button class="btn-primary" style="width:100%" onclick="checkLogin()">Login</button>
+        <h2>🔐 Asma's Online Service</h2>
+        <input type="password" id="masterPass" placeholder="Enter Password" style="margin-bottom: 20px;">
+        <button class="btn-primary" style="width:100%" onclick="validateLogin()">Unlock Portal</button>
+        <p style="margin-top: 15px; font-size:12px;">demo pass: admin123</p>
     </div>
 </div>
 
-<!-- Main Application Section -->
-<div id="appSection" class="main-app">
-    <div class="header">
+<div id="appScreen" class="main-dashboard" style="display: none;">
+    <div class="header-glow">
+        <div class="title">
+            <h1>⚡ Asma's Premium RTO Suite</h1>
+            <p>3-Way Filter | Expiry Alerts | PDF Support</p>
+        </div>
         <div>
-            <h1>Asma's Online Service Portal</h1>
-            <p>Premium RTO Documents & Expiry Tracker</p>
-        </div>
-        <div class="btn-group">
-            <button class="btn-success" onclick="downloadBackup()">Backup Download</button>
-            <button class="btn-secondary" onclick="document.getElementById('fileInput').click()">Restore Backup</button>
-            <input type="file" id="fileInput" style="display:none" onchange="restoreBackup(event)" accept=".json">
+            <button class="btn-primary" onclick="backupData()">💾 Backup JSON</button>
+            <button class="btn-warning" onclick="document.getElementById('restoreFile').click()">📂 Restore</button>
+            <input type="file" id="restoreFile" style="display:none" accept=".json" onchange="restoreBackup(event)">
         </div>
     </div>
 
-    <!-- Alert Panel for Expired Items -->
-    <div id="alertPanel" class="alert-panel">
-        <h4>⚠️ അടിയന്തിര ശ്രദ്ധയ്ക്ക് (Expiry Alerts)</h4>
-        <ul id="alertList"></ul>
+    <!-- STATS CARDS -->
+    <div class="stats-row">
+        <div class="stat-card"><h3>📋 Total Vehicles</h3><div class="stat-number" id="totalCount">0</div></div>
+        <div class="stat-card"><h3>⚠️ Expired Docs</h3><div class="stat-number" id="expiredCount">0</div></div>
+        <div class="stat-card"><h3>⏰ Expiring Soon (≤2d)</h3><div class="stat-number" id="soonCount">0</div></div>
     </div>
 
-    <!-- Input Form -->
-    <div class="form-container">
-        <div class="form-title" id="formTitle">പുതിയ കസ്റ്റമർ വിവരങ്ങൾ ചേർക്കുക (Add Customer)</div>
-        <input type="hidden" id="editId">
-        <div class="grid-inputs">
-            <div class="input-box">
-                <label>Customer Name</label>
-                <input type="text" id="custName" placeholder="ഉടമയുടെ പേര്">
-            </div>
-            <div class="input-box">
-                <label>Phone Number</label>
-                <input type="text" id="custPhone" placeholder="ഫോൺ നമ്പർ നൽകുക">
-            </div>
-            <div class="input-box">
-                <label>Vehicle Number</label>
-                <input type="text" id="vehNo" placeholder="KL-10-AA-1234" oninput="formatVehicleNumber(this)">
-            </div>
-            <div class="input-box">
-                <label>RC Book File</label>
-                <div class="file-wrapper"><input type="file" id="rcFile"></div>
-            </div>
-            <div class="input-box">
-                <label>Aadhaar Card File (Upload)</label>
-                <div class="file-wrapper"><input type="file" id="aadharFile"></div>
-            </div>
-            <div class="input-box">
-                <label>Welfare Card File (Upload)</label>
-                <div class="file-wrapper"><input type="file" id="welfareFile"></div>
-            </div>
-            <div class="input-box">
-                <label>PAN Card File (Upload)</label>
-                <div class="file-wrapper"><input type="file" id="panFile"></div>
-            </div>
-            <div class="input-box">
-                <label>Insurance Expiry</label>
-                <input type="date" id="insDate">
-                <div class="file-wrapper"><input type="file" id="insFile"></div>
-            </div>
-            <div class="input-box">
-                <label>Tax Expiry</label>
-                <input type="date" id="taxDate">
-                <div class="file-wrapper"><input type="file" id="taxFile"></div>
-            </div>
-            <div class="input-box">
-                <label>Permit Expiry</label>
-                <input type="date" id="perDate">
-                <div class="file-wrapper"><input type="file" id="perFile"></div>
-            </div>
-            <div class="input-box">
-                <label>Fitness Expiry</label>
-                <input type="date" id="fitDate">
-                <div class="file-wrapper"><input type="file" id="fitFile"></div>
-            </div>
-            <div class="input-box">
-                <label>PUC (Pollution) Expiry</label>
-                <input type="date" id="pucDate">
-                <div class="file-wrapper"><input type="file" id="pucFile"></div>
-            </div>
-            <div class="input-box">
-                <label>Renewal Date</label>
-                <input type="date" id="renDate">
-                <div class="file-wrapper"><input type="file" id="renFile"></div>
-            </div>
+    <!-- FORM SECTION -->
+    <div class="form-panel">
+        <h3 style="color:var(--accent-cyan); margin-bottom: 20px;">➕ Add / Edit Customer</h3>
+        <input type="hidden" id="editId" value="">
+        <div class="grid-4">
+            <div class="input-field"><label>Customer Name</label><input type="text" id="custName" placeholder="Full name"></div>
+            <div class="input-field"><label>Phone</label><input type="text" id="custPhone" placeholder="📞 Mobile"></div>
+            <div class="input-field"><label>Vehicle Number</label><input type="text" id="vehNo" placeholder="KL-01-AB-1234"></div>
+            <div class="input-field"><label>RC Book</label><div class="file-wrapper"><input type="file" id="rcFile" accept="image/*,application/pdf"></div></div>
+            <div class="input-field"><label>Aadhaar</label><div class="file-wrapper"><input type="file" id="aadharFile" accept="image/*,application/pdf"></div></div>
+            <div class="input-field"><label>Welfare Card</label><div class="file-wrapper"><input type="file" id="welfareFile" accept="image/*,application/pdf"></div></div>
+            <div class="input-field"><label>PAN Card</label><div class="file-wrapper"><input type="file" id="panFile" accept="image/*,application/pdf"></div></div>
+            <div class="input-field"><label>Insurance Expiry</label><input type="date" id="insDate"><div class="file-wrapper"><input type="file" id="insFile" accept="image/*,application/pdf"></div></div>
+            <div class="input-field"><label>Tax Expiry</label><input type="date" id="taxDate"><div class="file-wrapper"><input type="file" id="taxFile" accept="image/*,application/pdf"></div></div>
+            <div class="input-field"><label>Permit Expiry</label><input type="date" id="perDate"><div class="file-wrapper"><input type="file" id="perFile" accept="image/*,application/pdf"></div></div>
+            <div class="input-field"><label>Fitness Expiry</label><input type="date" id="fitDate"><div class="file-wrapper"><input type="file" id="fitFile" accept="image/*,application/pdf"></div></div>
+            <div class="input-field"><label>PUC Expiry</label><input type="date" id="pucDate"><div class="file-wrapper"><input type="file" id="pucFile" accept="image/*,application/pdf"></div></div>
+            <div class="input-field"><label>Renewal Date</label><input type="date" id="renDate"><div class="file-wrapper"><input type="file" id="renFile" accept="image/*,application/pdf"></div></div>
         </div>
-        <div style="margin-top: 35px; display: flex; gap: 12px;">
-            <button class="btn-primary" id="saveBtn" onclick="saveData()">Save Customer</button>
-            <button class="btn-secondary" id="cancelBtn" style="display:none;" onclick="resetForm()">Cancel Edit</button>
+        <div style="margin-top: 30px; display: flex; gap: 12px;">
+            <button class="btn-primary" id="saveBtn" onclick="saveCustomer()">💾 Save Record</button>
+            <button class="btn-warning" id="cancelEditBtn" style="display:none;" onclick="resetForm()">Cancel Edit</button>
         </div>
     </div>
 
-    <!-- SEARCH & FILTER CONTROLS SECTION -->
-    <div class="controls-section">
-        <div class="search-box-wrapper">
-            <input type="text" id="searchBar" class="search-input" placeholder="🔍 പേര്, വണ്ടി നമ്പർ, ഫോൺ അടിച്ചു സെർച്ച് ചെയ്യുക..." oninput="handleSearch()">
-        </div>
-        <div class="filter-group">
-            <div class="filter-title" id="filterStatusText">കാണിക്കുന്നത്: എല്ലാ കസ്റ്റമേഴ്സിനെയും</div>
-            <button class="btn-secondary" style="padding: 8px 14px; font-size: 12px;" onclick="filterTable('all')">Show All</button>
-            <button class="btn-danger" style="padding: 8px 14px; font-size: 12px; background: #ff3838;" onclick="filterTable('expired')">🛑 Expired Only</button>
+    <!-- 3-WAY FILTER BUTTONS -->
+    <div class="flex-between">
+        <input type="text" id="searchInput" placeholder="🔍 Search by name, vehicle, phone..." style="background:#1a1f36; padding:12px; border-radius:30px; width:50%; border:1px solid #252d53; color:white;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn-sm" id="filterAllBtn" onclick="setFilter('all')" style="background:#2a3050;">📋 All</button>
+            <button class="btn-sm" id="filterSoonBtn" onclick="setFilter('expiring_soon')" style="background:#ffb703; color:black;">⏰ Expiring Soon (≤2d)</button>
+            <button class="btn-sm btn-danger" id="filterExpiredBtn" onclick="setFilter('expired')">🚨 Expired Only</button>
         </div>
     </div>
 
-    <!-- Data Table Section -->
-    <div class="table-section">
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Customer Details</th>
-                        <th>Insurance</th>
-                        <th>Tax</th>
-                        <th>Permit</th>
-                        <th>Fitness</th>
-                        <th>PUC</th>
-                        <th>Renewal</th>
-                        <th>Uploaded Documents</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="dataTable"></tbody>
-            </table>
-        </div>
+    <!-- ALERT PANEL -->
+    <div id="alertPanel" class="alert-banner" style="display: none;">
+        <strong>⚠️ IMMEDIATE ATTENTION</strong>
+        <ul id="alertList" style="margin-left: 20px; margin-top: 8px;"></ul>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr><th>Owner / Vehicle</th><th>Insurance</th><th>Tax</th><th>Permit</th><th>Fitness</th><th>PUC</th><th>Renewal</th><th>Documents</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="rtoTableBody"></tbody>
+        </table>
     </div>
 </div>
 
 <script>
-    let database = JSON.parse(localStorage.getItem('asma_advanced_rto_db')) || [];
+    let db = JSON.parse(localStorage.getItem('asma_premium_rto')) || [];
     let currentFilter = 'all';
-    let searchQuery = '';
+    let searchText = '';
 
-    function checkLogin() {
-        if(document.getElementById('passInput').value !== "") {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('appSection').style.display = 'block';
-            renderTable();
-        } else {
-            alert("ദയവായി ഒരു Password നൽകുക!");
-        }
+    function validateLogin() {
+        let pwd = document.getElementById('masterPass').value;
+        if(pwd === "admin123") {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            renderDashboard();
+        } else { alert("Invalid password! Use admin123"); }
     }
 
-    function formatVehicleNumber(input) {
-        let val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        let formatted = '';
-
-        if (val.length > 0) { formatted += val.substring(0, 2); }
-        if (val.length > 2) { formatted += '-' + val.substring(2, 4); }
-        if (val.length > 4) {
-            let remaining = val.substring(4);
-            let letters = remaining.replace(/[0-9]/g, '');
-            let numbers = remaining.replace(/[^0-9]/g, '');
-            
-            if (letters.length > 0) { formatted += '-' + letters; }
-            if (numbers.length > 0) { formatted += '-' + numbers.substring(0, 4); }
-        }
-
-        if(formatted.endsWith('-')) { formatted = formatted.slice(0, -1); }
-        input.value = formatted;
+    function toBase64(file) {
+        return new Promise((resolve) => {
+            if(!file) return resolve(null);
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => resolve(null);
+        });
     }
 
-    function formatToDDMMYYYY(dateStr) {
-        if (!dateStr) return '---';
-        const parts = dateStr.split('-');
-        if (parts.length === 3) {
-            return `${parts[2]}/${parts[1]}/${parts[0]}`;
-        }
-        return dateStr;
+    function getFileIcon(base64Data) {
+        if(!base64Data) return null;
+        if(base64Data.startsWith('data:application/pdf')) return '📄 PDF';
+        if(base64Data.startsWith('data:image')) return '🖼️ Img';
+        return '📎 File';
     }
 
-    const toBase64 = file => new Promise((resolve) => {
-        if (!file) return resolve(null);
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => resolve(null);
-    });
+    async function saveCustomer() {
+        let name = document.getElementById('custName').value.trim();
+        let veh = document.getElementById('vehNo').value.trim();
+        if(!name || !veh) { alert("Name & Vehicle number required!"); return; }
+        let id = document.getElementById('editId').value;
+        let existing = id ? db.find(c => c.id == id) : null;
 
-    function handleSearch() {
-        searchQuery = document.getElementById('searchBar').value.toLowerCase().trim();
-        renderTable();
-    }
-
-    async function saveData() {
-        const name = document.getElementById('custName').value.trim();
-        const phone = document.getElementById('custPhone').value.trim();
-        const veh = document.getElementById('vehNo').value.trim();
-        if(!name || !veh) return alert("ഉടമയുടെ പേരും വണ്ടി നമ്പറും നിർബന്ധമാണ്!");
-
-        const editId = document.getElementById('editId').value;
-        let existingRecord = editId ? database.find(c => c.id == editId) : null;
-
-        const getFileData = async (inputId, key) => {
-            const fileInput = document.getElementById(inputId);
-            if(fileInput.files.length > 0) {
-                return await toBase64(fileInput.files[0]);
-            }
-            return existingRecord ? existingRecord[key] : null;
+        const getFile = async (inputId, prevKey) => {
+            let fileInput = document.getElementById(inputId);
+            if(fileInput.files.length) return await toBase64(fileInput.files[0]);
+            return existing ? existing[prevKey] : null;
         };
 
-        const rcDoc = await getFileData('rcFile', 'rcDoc');
-        const aadharDoc = await getFileData('aadharFile', 'aadharDoc');
-        const welfareDoc = await getFileData('welfareFile', 'welfareDoc');
-        const panDoc = await getFileData('panFile', 'panDoc');
-        const insDoc = await getFileData('insFile', 'insDoc');
-        const taxDoc = await getFileData('taxFile', 'taxDoc');
-        const perDoc = await getFileData('perFile', 'perDoc');
-        const fitDoc = await getFileData('fitFile', 'fitDoc');
-        const pucDoc = await getFileData('pucFile', 'pucDoc');
-        const renDoc = await getFileData('renFile', 'renDoc');
-
-        const customerData = {
-            id: editId ? Number(editId) : Date.now(),
+        let newRecord = {
+            id: id ? parseInt(id) : Date.now(),
             name: name,
-            phone: phone,
-            veh: veh,
+            phone: document.getElementById('custPhone').value,
+            veh: veh.toUpperCase(),
             insDate: document.getElementById('insDate').value,
             taxDate: document.getElementById('taxDate').value,
             perDate: document.getElementById('perDate').value,
             fitDate: document.getElementById('fitDate').value,
             pucDate: document.getElementById('pucDate').value,
             renDate: document.getElementById('renDate').value,
-            rcDoc: rcDoc,
-            aadharDoc: aadharDoc,
-            welfareDoc: welfareDoc,
-            panDoc: panDoc,
-            insDoc: insDoc,
-            taxDoc: taxDoc,
-            perDoc: perDoc,
-            fitDoc: fitDoc,
-            pucDoc: pucDoc,
-            renDoc: renDoc
+            rcDoc: await getFile('rcFile', 'rcDoc'),
+            aadharDoc: await getFile('aadharFile', 'aadharDoc'),
+            welfareDoc: await getFile('welfareFile', 'welfareDoc'),
+            panDoc: await getFile('panFile', 'panDoc'),
+            insDoc: await getFile('insFile', 'insDoc'),
+            taxDoc: await getFile('taxFile', 'taxDoc'),
+            perDoc: await getFile('perFile', 'perDoc'),
+            fitDoc: await getFile('fitFile', 'fitDoc'),
+            pucDoc: await getFile('pucFile', 'pucDoc'),
+            renDoc: await getFile('renFile', 'renDoc')
         };
-
-        if(editId) {
-            database = database.map(c => c.id == editId ? customerData : c);
-            alert("വിവരങ്ങൾ വിജയകരമായി Edit ചെയ്ത് പുതുക്കി!");
-        } else {
-            database.push(customerData);
-            alert("പുതിയ വിവരങ്ങൾ സുരക്ഷിതമായി Save ചെയ്തു!");
-        }
-
-        localStorage.setItem('asma_advanced_rto_db', JSON.stringify(database));
+        if(id) db = db.map(c => c.id == id ? newRecord : c);
+        else db.push(newRecord);
+        localStorage.setItem('asma_premium_rto', JSON.stringify(db));
         resetForm();
-        renderTable();
-    }
-
-    function editCustomer(id) {
-        const c = database.find(item => item.id === id);
-        if(!c) return;
-
-        document.getElementById('editId').value = c.id;
-        document.getElementById('custName').value = c.name;
-        document.getElementById('custPhone').value = c.phone || '';
-        document.getElementById('vehNo').value = c.veh;
-        document.getElementById('insDate').value = c.insDate;
-        document.getElementById('taxDate').value = c.taxDate;
-        document.getElementById('perDate').value = c.perDate;
-        document.getElementById('fitDate').value = c.fitDate;
-        document.getElementById('pucDate').value = c.pucDate;
-        document.getElementById('renDate').value = c.renDate;
-
-        document.getElementById('formTitle').innerText = "കസ്റ്റമർ വിവരങ്ങൾ Edit ചെയ്യുക: " + c.name;
-        document.getElementById('saveBtn').innerText = "Update Data";
-        document.getElementById('cancelBtn').style.display = "inline-block";
-        
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        renderDashboard();
+        alert("✅ Saved successfully!");
     }
 
     function resetForm() {
-        document.getElementById('editId').value = "";
-        document.getElementById('custName').value = "";
-        document.getElementById('custPhone').value = "";
-        document.getElementById('vehNo').value = "";
-        document.getElementById('insDate').value = "";
-        document.getElementById('taxDate').value = "";
-        document.getElementById('perDate').value = "";
-        document.getElementById('fitDate').value = "";
-        document.getElementById('pucDate').value = "";
-        document.getElementById('renDate').value = "";
-        
-        document.getElementById('rcFile').value = "";
-        document.getElementById('aadharFile').value = "";
-        document.getElementById('welfareFile').value = "";
-        document.getElementById('panFile').value = "";
-        document.getElementById('insFile').value = "";
-        document.getElementById('taxFile').value = "";
-        document.getElementById('perFile').value = "";
-        document.getElementById('fitFile').value = "";
-        document.getElementById('pucFile').value = "";
-        document.getElementById('renFile').value = "";
-
-        document.getElementById('formTitle').innerText = "പുതിയ കസ്റ്റമർ വിവരങ്ങൾ ചേർക്കുക (Add Customer)";
-        document.getElementById('saveBtn').innerText = "Save Customer";
-        document.getElementById('cancelBtn').style.display = "none";
+        document.getElementById('editId').value = '';
+        document.getElementById('custName').value = '';
+        document.getElementById('custPhone').value = '';
+        document.getElementById('vehNo').value = '';
+        ['insDate','taxDate','perDate','fitDate','pucDate','renDate'].forEach(id => document.getElementById(id).value = '');
+        ['rcFile','aadharFile','welfareFile','panFile','insFile','taxFile','perFile','fitFile','pucFile','renFile'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('saveBtn').innerText = '💾 Save Record';
+        document.getElementById('cancelEditBtn').style.display = 'none';
     }
 
-    function getDateStatus(dateStr) {
-        if(!dateStr) return { class: 'normal', label: '---', isExpired: false };
-        const today = new Date();
-        today.setHours(0,0,0,0);
-        const expDate = new Date(dateStr);
-        expDate.setHours(0,0,0,0);
-        
-        const diffTime = expDate - today;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        const formattedDate = formatToDDMMYYYY(dateStr);
-
-        if(diffDays <= 0) {
-            return { class: 'expired', label: `${formattedDate} (കഴിഞ്ഞു)`, isExpired: true };
-        } else if(diffDays <= 2) {
-            return { class: 'upcoming', label: `${formattedDate} (${diffDays} day)`, isExpired: false };
-        }
-        return { class: 'normal', label: formattedDate, isExpired: false };
-    }
-
-    function filterTable(type) {
-        currentFilter = type;
-        if(type === 'expired') {
-            document.getElementById('filterStatusText').innerText = "കാണിക്കുന്നത്: കാലാവധി കഴിഞ്ഞ വണ്ടികൾ മാത്രം 🛑";
-        } else {
-            document.getElementById('filterStatusText').innerText = "കാണിക്കുന്നത്: എല്ലാ കസ്റ്റമേഴ്സിനെയും";
-        }
-        renderTable();
-    }
-
-    function renderTable() {
-        const tbody = document.getElementById('dataTable');
-        const alertList = document.getElementById('alertList');
-        const alertPanel = document.getElementById('alertPanel');
-        
-        tbody.innerHTML = "";
-        alertList.innerHTML = "";
-        let alertCount = 0;
-
-        database.forEach(c => {
-            const phoneStr = c.phone ? c.phone.toLowerCase() : '';
-            const matchesSearch = c.name.toLowerCase().includes(searchQuery) || 
-                                  c.veh.toLowerCase().includes(searchQuery) ||
-                                  phoneStr.includes(searchQuery);
-                                  
-            if (searchQuery !== '' && !matchesSearch) {
-                return;
-            }
-
-            const ins = getDateStatus(c.insDate);
-            const tax = getDateStatus(c.taxDate);
-            const per = getDateStatus(c.perDate);
-            const fit = getDateStatus(c.fitDate);
-            const puc = getDateStatus(c.pucDate);
-            const ren = getDateStatus(c.renDate);
-
-            const hasAnyExpired = ins.isExpired || tax.isExpired || per.isExpired || fit.isExpired || puc.isExpired || ren.isExpired;
-
-            if(currentFilter === 'expired' && !hasAnyExpired) {
-                return; 
-            }
-
-            if(ins.class === 'expired' || ins.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Insurance (${formatToDDMMYYYY(c.insDate)})</li>`; alertCount++; }
-            if(tax.class === 'expired' || tax.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Road Tax (${formatToDDMMYYYY(c.taxDate)})</li>`; alertCount++; }
-            if(per.class === 'expired' || per.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Permit (${formatToDDMMYYYY(c.perDate)})</li>`; alertCount++; }
-            if(fit.class === 'expired' || fit.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Fitness (${formatToDDMMYYYY(c.fitDate)})</li>`; alertCount++; }
-            if(puc.class === 'expired' || puc.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - PUC Pollution (${formatToDDMMYYYY(c.pucDate)})</li>`; alertCount++; }
-            if(ren.class === 'expired' || ren.class === 'upcoming') { alertList.innerHTML += `<li>${c.name} (${c.veh}) - Renewal (${formatToDDMMYYYY(c.renDate)})</li>`; alertCount++; }
-
-            let docHtml = `<div class="doc-link-group">`;
-            if(c.rcDoc) docHtml += `<a href="${c.rcDoc}" download="RC_${c.veh}.png" class="doc-chip doc-rc" target="_blank">RC 📄</a>`;
-            if(c.aadharDoc) docHtml += `<a href="${c.aadharDoc}" download="Aadhar_${c.name}.png" class="doc-chip doc-aadhar" target="_blank">Aadhaar 📄</a>`;
-            if(c.welfareDoc) docHtml += `<a href="${c.welfareDoc}" download="Welfare_${c.name}.png" class="doc-chip doc-welfare" target="_blank">Welfare 📄</a>`;
-            if(c.panDoc) docHtml += `<a href="${c.panDoc}" download="PAN_${c.name}.png" class="doc-chip doc-pan" target="_blank">PAN 📄</a>`;
-            if(c.insDoc) docHtml += `<a href="${c.insDoc}" download="Insurance_${c.veh}.png" class="doc-chip" target="_blank">Ins 📄</a>`;
-            if(c.taxDoc) docHtml += `<a href="${c.taxDoc}" download="Tax_${c.veh}.png" class="doc-chip" target="_blank">Tax 📄</a>`;
-            if(c.perDoc) docHtml += `<a href="${c.perDoc}" download="Permit_${c.veh}.png" class="doc-chip" target="_blank">Permit 📄</a>`;
-            if(c.fitDoc) docHtml += `<a href="${c.fitDoc}" download="Fitness_${c.veh}.png" class="doc-chip" target="_blank">Fit 📄</a>`;
-            if(c.pucDoc) docHtml += `<a href="${c.pucDoc}" download="PUC_${c.veh}.png" class="doc-chip" target="_blank">PUC 📄</a>`;
-            if(c.renDoc) docHtml += `<a href="${c.renDoc}" download="Renewal_${c.veh}.png" class="doc-chip" target="_blank">Ren 📄</a>`;
-            
-            if(docHtml === `<div class="doc-link-group">`) docHtml = `<span class="doc-missing">ഫയലുകൾ ഇല്ല</span>`;
-            else docHtml += `</div>`;
-
-            const rowClass = hasAnyExpired ? 'row-has-expired' : '';
-            const displayPhone = c.phone ? c.phone : '---';
-
-            tbody.innerHTML += `
-                <tr class="${rowClass}">
-                    <td>
-                        <strong>${c.name}</strong><br>
-                        <span style="color:#8fa0dd; font-size:13px;">📞 ${displayPhone}</span><br>
-                        <span style="color:var(--accent); font-weight:bold; font-size:15px; letter-spacing:0.5px;">${c.veh}</span>
-                    </td>
-                    <td><span class="date-badge ${ins.class}">${ins.label}</span></td>
-                    <td><span class="date-badge ${tax.class}">${tax.label}</span></td>
-                    <td><span class="date-badge ${per.class}">${per.label}</span></td>
-                    <td><span class="date-badge ${fit.class}">${fit.label}</span></td>
-                    <td><span class="date-badge ${puc.class}">${puc.label}</span></td>
-                    <td><span class="date-badge ${ren.class}">${ren.label}</span></td>
-                    <td>${docHtml}</td>
-                    <td>
-                        <div class="action-cell">
-                            <button class="btn-sm btn-edit" onclick="editCustomer(${c.id})">Edit</button>
-                            <button class="btn-sm btn-delete" onclick="deleteCustomer(${c.id})">Del</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        });
-
-        alertPanel.style.display = alertCount > 0 ? "block" : "none";
+    function editCustomer(cust) {
+        document.getElementById('editId').value = cust.id;
+        document.getElementById('custName').value = cust.name;
+        document.getElementById('custPhone').value = cust.phone || '';
+        document.getElementById('vehNo').value = cust.veh;
+        document.getElementById('insDate').value = cust.insDate || '';
+        document.getElementById('taxDate').value = cust.taxDate || '';
+        document.getElementById('perDate').value = cust.perDate || '';
+        document.getElementById('fitDate').value = cust.fitDate || '';
+        document.getElementById('pucDate').value = cust.pucDate || '';
+        document.getElementById('renDate').value = cust.renDate || '';
+        document.getElementById('saveBtn').innerText = '✏️ Update Record';
+        document.getElementById('cancelEditBtn').style.display = 'inline-block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function deleteCustomer(id) {
-        if(confirm("ഈ കസ്റ്റമറുടെ എല്ലാ വിവരങ്ങളും ഡിലീറ്റ് ചെയ്യണോ?")) {
-            database = database.filter(item => item.id !== id);
-            localStorage.setItem('asma_advanced_rto_db', JSON.stringify(database));
-            renderTable();
+        if(confirm("Delete permanently?")) {
+            db = db.filter(c => c.id !== id);
+            localStorage.setItem('asma_premium_rto', JSON.stringify(db));
+            renderDashboard();
         }
     }
 
-    function downloadBackup() {
-        if(database.length === 0) return alert("ഡൗൺലോഡ് ചെയ്യാൻ ഡാറ്റയൊന്നും ഇൻപുട്ട് ചെയ്തിട്ടില്ല!");
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(database));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "Asma_RTO_Data_Backup.json");
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
+    function getDaysRemaining(dateStr) {
+        if(!dateStr) return null;
+        let today = new Date(); today.setHours(0,0,0,0);
+        let exp = new Date(dateStr);
+        return (exp - today) / (1000*3600*24);
     }
 
-    function restoreBackup(event) {
-        const file = event.target.files[0];
+    function statusObj(dateStr) {
+        if(!dateStr) return { class: '', label: '—', expired: false, upcoming: false, daysLeft: null };
+        let days = getDaysRemaining(dateStr);
+        let formatted = dateStr.split('-').reverse().join('/');
+        if(days < 0) return { class: 'expired-badge', label: `🚫 ${formatted}`, expired: true, upcoming: false, daysLeft: days };
+        if(days <= 2) return { class: 'upcoming-badge', label: `⚠️ ${formatted} (${Math.ceil(days)}d)`, expired: false, upcoming: true, daysLeft: days };
+        return { class: '', label: `✅ ${formatted}`, expired: false, upcoming: false, daysLeft: days };
+    }
+
+    function createDocLink(base64Data, docName) {
+        if(!base64Data) return '';
+        let icon = getFileIcon(base64Data);
+        let ext = base64Data.startsWith('data:application/pdf') ? '.pdf' : '.jpg';
+        return `<a href="${base64Data}" download="${docName}${ext}" title="Download">${icon}</a>`;
+    }
+
+    function setFilter(type) {
+        currentFilter = type;
+        // Update button styles
+        document.getElementById('filterAllBtn').style.opacity = '0.6';
+        document.getElementById('filterSoonBtn').style.opacity = '0.6';
+        document.getElementById('filterExpiredBtn').style.opacity = '0.6';
+        if(type === 'all') document.getElementById('filterAllBtn').style.opacity = '1';
+        if(type === 'expiring_soon') document.getElementById('filterSoonBtn').style.opacity = '1';
+        if(type === 'expired') document.getElementById('filterExpiredBtn').style.opacity = '1';
+        renderDashboard();
+    }
+
+    function renderDashboard() {
+        let filtered = [...db];
+        
+        // Apply search
+        if(searchText) {
+            filtered = filtered.filter(c => c.name.toLowerCase().includes(searchText) || 
+                                          c.veh.toLowerCase().includes(searchText) || 
+                                          (c.phone && c.phone.includes(searchText)));
+        }
+        
+        // Apply filter
+        if(currentFilter === 'expired') {
+            filtered = filtered.filter(c => {
+                let dates = [c.insDate, c.taxDate, c.perDate, c.fitDate, c.pucDate, c.renDate];
+                return dates.some(d => d && getDaysRemaining(d) < 0);
+            });
+        }
+        else if(currentFilter === 'expiring_soon') {
+            filtered = filtered.filter(c => {
+                let dates = [c.insDate, c.taxDate, c.perDate, c.fitDate, c.pucDate, c.renDate];
+                return dates.some(d => {
+                    let days = getDaysRemaining(d);
+                    return days !== null && days > 0 && days <= 2;
+                });
+            });
+        }
+        
+        // Calculate stats
+        let totalExpired = 0, totalSoon = 0;
+        filtered.forEach(c => {
+            [c.insDate, c.taxDate, c.perDate, c.fitDate, c.pucDate, c.renDate].forEach(d => {
+                let days = getDaysRemaining(d);
+                if(days < 0) totalExpired++;
+                if(days !== null && days > 0 && days <= 2) totalSoon++;
+            });
+        });
+        
+        document.getElementById('totalCount').innerText = filtered.length;
+        document.getElementById('expiredCount').innerText = totalExpired;
+        document.getElementById('soonCount').innerText = totalSoon;
+        
+        let tbody = document.getElementById('rtoTableBody');
+        let alertList = document.getElementById('alertList');
+        alertList.innerHTML = '';
+        let hasAlert = false;
+        tbody.innerHTML = '';
+        
+        for(let c of filtered) {
+            let ins = statusObj(c.insDate);
+            let tax = statusObj(c.taxDate);
+            let permit = statusObj(c.perDate);
+            let fitness = statusObj(c.fitDate);
+            let puc = statusObj(c.pucDate);
+            let renewal = statusObj(c.renDate);
+            
+            if(ins.expired || tax.expired || permit.expired || fitness.expired || puc.expired || renewal.expired) hasAlert = true;
+            if(ins.expired || ins.upcoming) alertList.innerHTML += `<li>${c.name} (${c.veh}) • Insurance ${ins.label}</li>`;
+            if(tax.expired || tax.upcoming) alertList.innerHTML += `<li>${c.name} (${c.veh}) • Tax ${tax.label}</li>`;
+            if(permit.expired || permit.upcoming) alertList.innerHTML += `<li>${c.name} (${c.veh}) • Permit ${permit.label}</li>`;
+            
+            let docHtml = `<div class="doc-links">`;
+            docHtml += createDocLink(c.rcDoc, `RC_${c.veh}`);
+            docHtml += createDocLink(c.aadharDoc, `Aadhar_${c.name}`);
+            docHtml += createDocLink(c.welfareDoc, `Welfare_${c.name}`);
+            docHtml += createDocLink(c.panDoc, `PAN_${c.name}`);
+            docHtml += createDocLink(c.insDoc, `Insurance_${c.veh}`);
+            docHtml += createDocLink(c.taxDoc, `Tax_${c.veh}`);
+            docHtml += createDocLink(c.perDoc, `Permit_${c.veh}`);
+            docHtml += createDocLink(c.fitDoc, `Fitness_${c.veh}`);
+            docHtml += createDocLink(c.pucDoc, `PUC_${c.veh}`);
+            docHtml += createDocLink(c.renDoc, `Renewal_${c.veh}`);
+            docHtml += `</div>`;
+            
+            let hasAnyDoc = c.rcDoc || c.aadharDoc || c.welfareDoc || c.panDoc || c.insDoc || c.taxDoc || c.perDoc || c.fitDoc || c.pucDoc || c.renDoc;
+            if(!hasAnyDoc) docHtml = `<span style="color:#5c6b9c;">— no files —</span>`;
+            
+            tbody.innerHTML += `<tr>
+                <td><strong>${c.name}</strong><br><span style="color:#8fa0dd;">${c.phone || ''}</span><br><span style="color:#00f0ff;">${c.veh}</span></td>
+                <td><span class="${ins.class}">${ins.label}</span></td>
+                <td><span class="${tax.class}">${tax.label}</span></td>
+                <td><span class="${permit.class}">${permit.label}</span></td>
+                <td><span class="${fitness.class}">${fitness.label}</span></td>
+                <td><span class="${puc.class}">${puc.label}</span></td>
+                <td><span class="${renewal.class}">${renewal.label}</span></td>
+                <td>${docHtml}</td>
+                <td><button class="btn-sm btn-primary" onclick='editCustomer(${JSON.stringify(c)})'>Edit</button> <button class="btn-sm btn-danger" onclick="deleteCustomer(${c.id})">Del</button></td>
+             </tr>`;
+        }
+        document.getElementById('alertPanel').style.display = hasAlert ? 'block' : 'none';
+    }
+    
+    document.getElementById('searchInput').addEventListener('input', (e) => { searchText = e.target.value.toLowerCase(); renderDashboard(); });
+    function backupData() { 
+        let a = document.createElement('a');
+        a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+        a.download = "Asma_RTO_Backup.json";
+        a.click();
+    }
+    function restoreBackup(e) {
+        let file = e.target.files[0];
         if(!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
+        let reader = new FileReader();
+        reader.onload = ev => {
             try {
-                const importedData = JSON.parse(e.target.result);
-                if(Array.isArray(importedData)) {
-                    database = importedData;
-                    localStorage.setItem('asma_advanced_rto_db', JSON.stringify(database));
-                    renderTable();
-                    alert("ബാക്കപ്പ് ഫയൽ വിജയകരമായി Restore ചെയ്തു!");
-                } else {
-                    alert("ഫയൽ ശരിയായ ഫോർമാറ്റിൽ അല്ല!");
-                }
-            } catch(err) {
-                alert("ബാക്കപ്പ് ഫയൽ റീഡ് ചെയ്യാൻ സാധിച്ചില്ല!");
-            }
+                let data = JSON.parse(ev.target.result);
+                if(Array.isArray(data)) { db = data; localStorage.setItem('asma_premium_rto', JSON.stringify(db)); renderDashboard(); alert("Restore successful!"); }
+                else alert("Invalid backup");
+            } catch(err) { alert("Corrupt file"); }
         };
         reader.readAsText(file);
     }
